@@ -26,8 +26,8 @@ public class FigureController : BaseGameObjectController
 	private float maxDeltaH;
 	private float minDeltaH = 1.0f;
 	private float DX = 0.028f;
-	private float fallingVelocity = -0.2f;
-	private float fastFallingVelocity = -2f;
+	public const float FALLING_VELOCITY = -0.2f;
+	private const float FAST_FALLING_VELOCITY = -2f;
 
 
 	private float desiredPosX;
@@ -133,7 +133,7 @@ public class FigureController : BaseGameObjectController
 	{
 		SetFigureTrigger (false);
 		state = FigureState.Idle;
-		BoardGizmos.ClearLog ();
+		//BoardGizmos.ClearLog ();
 		float delta = deltaH - gameObject.transform.position.y;
 		if (delta > maxDeltaH) {
 			maxDeltaH = delta;
@@ -141,7 +141,7 @@ public class FigureController : BaseGameObjectController
 		if (delta < minDeltaH) {
 			minDeltaH = delta;
 		}
-		Debug.Log ("max=" + maxDeltaH + "  min=" + minDeltaH);
+		//Debug.Log ("max=" + maxDeltaH + "  min=" + minDeltaH);
 	}
 
 	void PerformMoveLeft ()
@@ -172,7 +172,7 @@ public class FigureController : BaseGameObjectController
 
 	void PerformFallingDown ()
 	{
-		Vector2 velocity = new Vector2 (0, state == FigureState.MoveDown ? fastFallingVelocity : fallingVelocity);
+		Vector2 velocity = new Vector2 (0, state == FigureState.MoveDown ? FAST_FALLING_VELOCITY : FALLING_VELOCITY);
 		gameObject.GetComponent<Rigidbody2D> ().velocity = velocity;
 	}
 

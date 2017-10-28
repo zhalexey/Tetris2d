@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using System.Reflection;
 
 
@@ -32,14 +32,14 @@ public class BoardGizmos : MonoBehaviour {
 		Debug.DrawLine (pointA, pointB, Color.gray);
 
 	}
-
+	/*
 	public static void ClearLog()
 	{
 		var assembly = Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
 		var type = assembly.GetType("UnityEditorInternal.LogEntries");
 		var method = type.GetMethod("Clear");
 		method.Invoke(new object(), null);
-	}
+	}*/
 
 	public static void DrawBoxAim(Vector2 pos) {
 		Vector2 pointA = new Vector2 (pos.x - BoardController.BRICK_SIZE, pos.y);

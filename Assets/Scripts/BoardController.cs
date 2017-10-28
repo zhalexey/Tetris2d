@@ -53,7 +53,15 @@ public class BoardController : MonoBehaviour
 		//DrawBoard ();
 	}
 
-	void InitBoard ()
+
+	void Update ()
+	{
+		CheckBoardStatus ();
+	}
+
+	//--------------------------------------------- Board instrument methods -----------------------------
+
+	private void InitBoard ()
 	{
 		for (int i = 0; i < BOARD_HEIGHT; i++)
 			for (int j = 0; j < BOARD_WIDTH; j++) {
@@ -72,6 +80,7 @@ public class BoardController : MonoBehaviour
 			}
 	}
 
+
 	/*
 	 * Get absolute position from board position 
 	 */
@@ -83,13 +92,6 @@ public class BoardController : MonoBehaviour
 		return pos;
 	}
 
-	public Vector2 getFloorPos (int x, int y)
-	{
-		Vector2 pos = new Vector2 ();
-		pos.x = (x - BOARD_HALF_WIDTH) * BRICK_SIZE;
-		pos.y = (-y + BOARD_HALF_HEIGHT - 1) * BRICK_SIZE - BRICK_HALF_SIZE;
-		return pos;
-	}
 
 	/*
 	 * Get board position from absolute position
@@ -99,20 +101,7 @@ public class BoardController : MonoBehaviour
 		return new Vector2 (BOARD_HALF_WIDTH + absPos.x / BRICK_SIZE, BOARD_HALF_HEIGHT - 1 - absPos.y / BRICK_SIZE);
 	}
 
-
 	//----------------------------------------------------------Check board status--------------------------------------
-
-	void Update ()
-	{
-
-		CheckBoardStatus ();
-
-		//if (Input.GetKey (KeyCode.Space)) {
-		//BoardGizmos.ClearLog ();
-		//DebugGrid ();
-		//}
-	}
-
 
 	void CheckBoardStatus ()
 	{	
@@ -125,17 +114,16 @@ public class BoardController : MonoBehaviour
 
 			Collider2D[] hits = Physics2D.OverlapAreaAll (pointA, pointB);
 
-
-			if (hits.Length >= BOARD_WIDTH) {
+			if (BOARD_WIDTH == hits.Length) {
 				foreach (Collider2D hit in hits) {
-					if (hit.tag != PLAYER_TAG) {
+					if (isNotPlayerCollider (hit) && isFigureHaveFalled (hit)) {
 						counter++;
 					}
 				}
 
 				if (counter == BOARD_WIDTH) {
-					List<GameObject> parentFigures = BurnBrickLine (hits);
-					DivideFigures (parentFigures);
+					List<GameObject> parentFigures = BoardHelper.Instance.BurnBrickLine (hits);
+					BoardHelper.Instance.DivideFigures (parentFigures);
 				}
 
 			}
@@ -143,172 +131,20 @@ public class BoardController : MonoBehaviour
 	}
 
 
-	private List<GameObject> BurnBrickLine (Collider2D[] hits)
+	private bool isNotPlayerCollider (Collider2D hit)
 	{
-		List<GameObject> parents = new List<GameObject> ();
-
-		foreach (Collider2D hit in hits) {
-			if (hit.tag != PLAYER_TAG) {
-				List<GameObject> toDestroy = new List<GameObject> ();
-
-				// 1. Mark brick to destroy
-				toDestroy.Add (hit.gameObject);
-
-				// 2. Mark parent figure to destroy if it is empty
-				GameObject parent = hit.gameObject.transform.parent.gameObject;
-				Transform[] childObjs = parent.GetComponentsInChildren<Transform> ();
-
-				// First is the figure itself, second is the hit brick
-				if (childObjs.Length == 2) {
-					toDestroy.Add (parent);
-				} else {
-					parents.Add (parent);
-				}
-
-				// 3. Destroy marked 
-				foreach (GameObject obj in toDestroy) {
-					DestroyImmediate(obj);
-				}
-			}
-		}
-		return parents;
+		return hit.tag != PLAYER_TAG;
 	}
 
 
-	private void DivideFigures (List<GameObject> figures)
+	private bool isFigureHaveFalled (Collider2D collider)
 	{
-		if (figures.Count == 0) {
-			return;
-		}
-		foreach (GameObject figure in figures) {
-			DivideFigure (figure);
-		}
+		return collider.gameObject.GetComponent<Rigidbody2D> ().velocity.y > FigureController.FALLING_VELOCITY;
 	}
 
 
-	void DivideFigure (GameObject figure)
-	{
-		if (figure == null) {
-			return;
-		}
-			
-		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
+	//---------------------------------------------------------- Figure validations --------------------------------------
 
-		Array.Sort (childs, ByNameComparison);
-
-
-		List<Group> groups = new List<Group> ();
-		List<GameObject> bricks = new List<GameObject> ();
-
-		foreach (Transform child in childs) {
-			if (child.gameObject.GetInstanceID () != figure.GetInstanceID ()) {
-
-				bricks.Add (child.gameObject);
-
-				FixedJoint2D joint = child.gameObject.GetComponent<FixedJoint2D> ();
-				Rigidbody2D connectedBody = joint.connectedBody;
-
-				if (connectedBody == null) {
-					groups.Add(new Group(bricks));
-					bricks = new List<GameObject> ();
-				}
-
-			}
-		}
-
-
-		// Groups more than one - its a reason to divide figure
-
-		if (groups.Count > 1) {
-
-
-			List<FixedJoint2D> toDestroyJoints = new List<FixedJoint2D> ();
-
-			FixedJoint2D[] parentFigureJoints = figure.GetComponents<FixedJoint2D> ();
-
-			int count = 0;
-			foreach (Group group in groups) {
-				if (count++ > 0) {
-
-					foreach (GameObject brick in group.Values) {
-
-						foreach (FixedJoint2D parentJoint in parentFigureJoints) {
-						
-							Rigidbody2D connectedBody = parentJoint.connectedBody;
-							if (connectedBody != null && brick.GetInstanceID().Equals(connectedBody.gameObject.GetInstanceID())) {
-								toDestroyJoints.Add (parentJoint);
-
-
-							}
-
-						}
-
-					}
-
-				}
-			}
-
-
-			// Get new figure position
-
-			Vector3 averagePosition = new Vector3 (0, 0, 0);
-			foreach (FixedJoint2D joint in toDestroyJoints) {
-				averagePosition += joint.gameObject.transform.position;
-			}
-			averagePosition /= toDestroyJoints.Count;
-
-
-			// Create new figures, add joints
-
-
-			GameObject newFigure = new GameObject ("Figure_divided");
-			newFigure.transform.position = averagePosition;
-
-			for (int i = 0; i < toDestroyJoints.Count; i++) {
-				newFigure.AddComponent<FixedJoint2D> ();
-			}
-			FixedJoint2D[] newJoints = newFigure.GetComponents<FixedJoint2D> ();
-
-			int j = 0;
-			foreach (FixedJoint2D joint in toDestroyJoints) {
-				joint.connectedBody.gameObject.transform.parent = newFigure.transform;
-					
-				newJoints[j].connectedBody = joint.connectedBody;
-				Destroy (joint);
-			}
-
-			Debug.Log("test");		
-		}
-
-	}
-
-
-	private int ByNameComparison(Transform obj1, Transform obj2) {
-		return obj1.name.CompareTo (obj2.name);
-	}
-
-
-	//------------------------------------------------------------------------------------------
-
-	public void DebugGrid ()
-	{
-		for (int i = 0; i < BOARD_HEIGHT; i++) {
-			string line = "";
-			for (int j = 0; j < BOARD_WIDTH; j++) {
-				line += grid [i, j] ? "1" : "0";
-			}
-			Debug.Log (line);
-		}
-	}
-
-
-
-
-
-
-
-
-	//----------------------------------------------------------Figure validations--------------------------------------
 
 	public bool CanRotate (GameObject figure)
 	{
@@ -407,6 +243,22 @@ public class BoardController : MonoBehaviour
 			}
 		}
 		return true;
+	}
+
+
+
+
+	//--------------------------------------- Debug methods ---------------------------------------------------
+
+	public void DebugGrid ()
+	{
+		for (int i = 0; i < BOARD_HEIGHT; i++) {
+			string line = "";
+			for (int j = 0; j < BOARD_WIDTH; j++) {
+				line += grid [i, j] ? "1" : "0";
+			}
+			Debug.Log (line);
+		}
 	}
 
 }
