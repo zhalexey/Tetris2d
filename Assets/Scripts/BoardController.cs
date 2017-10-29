@@ -122,8 +122,7 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					List<GameObject> parentFigures = BoardHelper.Instance.BurnBrickLine (hits);
-					BoardHelper.Instance.DivideFigures (parentFigures);
+					BoardHelper.Instance.BurnBrickLine (hits);
 				}
 
 			}

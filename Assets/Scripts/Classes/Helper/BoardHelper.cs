@@ -20,7 +20,7 @@ public class BoardHelper
 	}
 
 
-	public List<GameObject> BurnBrickLine (Collider2D[] hits)
+	public void BurnBrickLine (Collider2D[] hits)
 	{
 		List<GameObject> parents = new List<GameObject> ();
 		List<GameObject> toDestroy = new List<GameObject> ();
@@ -61,13 +61,14 @@ public class BoardHelper
 		foreach (FixedJoint2D joint in toDestroyJoints) {
 			MonoBehaviour.Destroy (joint);
 		}
-		
 
-		return parents;
+
+		// 5. Divide into figures
+		DivideFigures (parents);
 	}
 
 
-	public void DivideFigures (List<GameObject> figures)
+	private void DivideFigures (List<GameObject> figures)
 	{
 		if (figures.Count == 0) {
 			return;
@@ -78,7 +79,7 @@ public class BoardHelper
 	}
 
 
-	void DivideFigure (GameObject figure)
+	private void DivideFigure (GameObject figure)
 	{
 		if (figure == null) {
 			return;
@@ -126,7 +127,6 @@ public class BoardHelper
 		foreach (FixedJoint2D joint in emptyJoints) {
 			MonoBehaviour.Destroy (joint);
 		}
-
 
 		return groups;
 	}
