@@ -41,7 +41,7 @@ public class BoardController : MonoBehaviour
 	};*/
 
 	public GameObject brick;
-	public GameObject figureBoardTest;
+	//public GameObject figureBoardTest;
 
 
 	int countHits;
