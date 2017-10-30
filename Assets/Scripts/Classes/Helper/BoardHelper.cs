@@ -37,7 +37,8 @@ public class BoardHelper
 			// 2.5 Mark fixed joints of parent to destroy
 			FixedJoint2D[] parentJoints = parent.GetComponents<FixedJoint2D> ();
 			foreach (FixedJoint2D joint in parentJoints) {
-				if (joint.connectedBody.gameObject.Equals(hit.gameObject)) {
+				Rigidbody2D childBrickBody = joint.connectedBody;
+				if (childBrickBody != null && childBrickBody.gameObject == hit.gameObject) {
 					toDestroyJoints.Add(joint);
 				}
 			}
@@ -85,15 +86,35 @@ public class BoardHelper
 			return;
 		}
 
-		List<Group> groups = DivideIntoGroups (figure);
+		if (isPossibleToDivideFigure (figure)) {
+			
+			List<Group> groups = DivideIntoGroups (figure);
 
-		// Groups more than one - its a reason to divide figure
-		if (groups.Count > 1) {
-			List<FixedJoint2D> toDestroyJoints = CollectJointsToDestroy (figure, groups);
-			CreateNewFigure (toDestroyJoints);
+			// Groups more than one - its a reason to divide figure
+			if (groups.Count > 1) {
+				CreateNewFigures (figure, groups);
+			}
+			return;
+		}
+
+		RemoveEmptyJoints (figure);
+	}
+
+
+	private void RemoveEmptyJoints(GameObject figure) {
+		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
+		foreach (Transform child in childs) {
+			FixedJoint2D joint = child.GetComponent<FixedJoint2D> ();
+			if (joint != null && joint.connectedBody == null) {
+				MonoBehaviour.Destroy (joint);
+			}
 		}
 	}
 
+
+	private bool isPossibleToDivideFigure(GameObject figure) {
+		return figure.GetComponentsInChildren<Transform>().Length > 2;
+	}
 
 	private int ByNameComparison (Transform obj1, Transform obj2)
 	{
@@ -103,28 +124,35 @@ public class BoardHelper
 
 	private List<Group> DivideIntoGroups (GameObject figure)
 	{
-		List<FixedJoint2D> emptyJoints = new List<FixedJoint2D> ();
+		List<FixedJoint2D> jointsToDestroy = new List<FixedJoint2D> ();
 
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		Array.Sort (childs, ByNameComparison);
 
 		List<Group> groups = new List<Group> ();
 		List<GameObject> bricks = new List<GameObject> ();
+
 		foreach (Transform child in childs) {
-			if (child.gameObject.GetInstanceID () != figure.GetInstanceID ()) {
+			if (figure != child.gameObject) {
+				
 				bricks.Add (child.gameObject);
 				FixedJoint2D joint = child.gameObject.GetComponent<FixedJoint2D> ();
 				Rigidbody2D connectedBody = joint.connectedBody;
+
 				if (connectedBody == null) {
 					groups.Add (new Group (bricks));
 					bricks = new List<GameObject> ();
-					emptyJoints.Add (joint);
+					jointsToDestroy.Add (joint);
 				}
 			}
 		}
 
+		if (bricks.Count > 0) {
+			groups.Add(new Group(bricks));
+		}
+
 		// Destroy empty joints
-		foreach (FixedJoint2D joint in emptyJoints) {
+		foreach (FixedJoint2D joint in jointsToDestroy) {
 			MonoBehaviour.Destroy (joint);
 		}
 
@@ -132,9 +160,9 @@ public class BoardHelper
 	}
 
 
-	private List<FixedJoint2D> CollectJointsToDestroy (GameObject figure, List<Group> groups)
+	private List<FixedJoint2D> CreateNewFigures (GameObject figure, List<Group> groups)
 	{
-		List<FixedJoint2D> toDestroyJoints = new List<FixedJoint2D> ();
+		List<FixedJoint2D> jointsToMove = new List<FixedJoint2D> ();
 		FixedJoint2D[] parentFigureJoints = figure.GetComponents<FixedJoint2D> ();
 		int count = 0;
 		foreach (Group group in groups) {
@@ -142,32 +170,44 @@ public class BoardHelper
 				foreach (GameObject brick in group.Values) {
 					foreach (FixedJoint2D parentJoint in parentFigureJoints) {
 						Rigidbody2D connectedBody = parentJoint.connectedBody;
-						if (connectedBody != null && brick.GetInstanceID ().Equals (connectedBody.gameObject.GetInstanceID ())) {
-							toDestroyJoints.Add (parentJoint);
+						if (connectedBody != null && brick == connectedBody.gameObject) {
+							jointsToMove.Add (parentJoint);
 						}
 					}
 				}
+
+				CreateNewFigure(jointsToMove);
+				jointsToMove = new List<FixedJoint2D> ();
 			}
 		}
-		return toDestroyJoints;
+
+		return jointsToMove;
 	}
 
 
 	/*
-	 * Create new figures from destroyed joints` gameobjects
+	 * Create new figures from moved joints` gameobjects
 	 */
-	private void CreateNewFigure (List<FixedJoint2D> toDestroyJoints)
+	private void CreateNewFigure (List<FixedJoint2D> jointsToMove)
 	{
 		GameObject newFigure = new GameObject ("Figure_divided");
-		newFigure.transform.position = CountAveragePosition (toDestroyJoints);
-		for (int i = 0; i < toDestroyJoints.Count; i++) {
+		newFigure.transform.position = CountAveragePosition (jointsToMove);
+
+		for (int i = 0; i < jointsToMove.Count; i++) {
 			newFigure.AddComponent<FixedJoint2D> ();
 		}
+
+		List<FixedJoint2D> jointsToDestroy = new List<FixedJoint2D>();
+
 		FixedJoint2D[] newJoints = newFigure.GetComponents<FixedJoint2D> ();
 		int j = 0;
-		foreach (FixedJoint2D joint in toDestroyJoints) {
+		foreach (FixedJoint2D joint in jointsToMove) {
 			joint.connectedBody.gameObject.transform.parent = newFigure.transform;
-			newJoints [j].connectedBody = joint.connectedBody;
+			newJoints [j++].connectedBody = joint.connectedBody;
+			jointsToDestroy.Add (joint);
+		}
+
+		foreach (FixedJoint2D joint in jointsToDestroy) {
 			MonoBehaviour.Destroy (joint);
 		}
 	}
