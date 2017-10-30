@@ -16,18 +16,18 @@ public class FigureController : BaseGameObjectController
 
 	;
 
+
+	private const float DELTA_X = 0.028f;
+	public const float FALLING_VELOCITY = -0.2f;
+	private const float FAST_FALLING_VELOCITY = -2f;
+
 	private FigureState state = FigureState.Idle;
-
-
 	private float angle = 0;
 	private float desiredAngle = 0;
 
 	private float deltaH;
 	private float maxDeltaH;
 	private float minDeltaH = 1.0f;
-	private float DX = 0.028f;
-	public const float FALLING_VELOCITY = -0.2f;
-	private const float FAST_FALLING_VELOCITY = -2f;
 
 
 	private float desiredPosX;
@@ -148,7 +148,7 @@ public class FigureController : BaseGameObjectController
 	{
 		Vector2 position = gameObject.transform.position;
 		if (position.x > desiredPosX) {
-			position.x -= DX;
+			position.x -= DELTA_X;
 			gameObject.transform.position = position;
 		} else {
 			position.x = desiredPosX;
@@ -161,7 +161,7 @@ public class FigureController : BaseGameObjectController
 	{
 		Vector2 position = gameObject.transform.position;
 		if (position.x < desiredPosX) {
-			position.x += DX;
+			position.x += DELTA_X;
 			gameObject.transform.position = position;
 		} else {
 			position.x = desiredPosX;

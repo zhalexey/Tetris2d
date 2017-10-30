@@ -41,14 +41,14 @@ public class BoardController : MonoBehaviour
 	};*/
 
 	public GameObject brick;
-	//public GameObject figureBoardTest;
+	public GameObject figureBoardTest;
 
 
 	int countHits;
 
 	void Start ()
 	{
-		//Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
+		Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
 		//InitBoard ();
 		//DrawBoard ();
 	}
