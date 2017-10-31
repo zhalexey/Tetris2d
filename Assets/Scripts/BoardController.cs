@@ -51,7 +51,18 @@ public class BoardController : MonoBehaviour
 
 
 	private GameObject GetNextFigure() {
-		return figures [UnityEngine.Random.Range(0, figures.Count)];
+		GameObject figure = figures [UnityEngine.Random.Range(0, figures.Count)];
+
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (0, brickTypes.Count)];
+
+		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
+		foreach (Transform child in childs) {
+			if (figure != child.gameObject) {
+				child.GetComponent<SpriteRenderer> ().sprite = sprite;
+			}
+		}
+
+		return figure;
 	}
 
 
