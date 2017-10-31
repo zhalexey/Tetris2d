@@ -5,7 +5,6 @@ using System;
 
 public class BoardController : MonoBehaviour
 {
-	
 
 	public const int BOARD_WIDTH = 11;
 	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
@@ -27,12 +26,11 @@ public class BoardController : MonoBehaviour
 	//public GameObject figureBoardTest;
 
 	public List<GameObject> figures;
-
 	public List<Sprite> brickTypes;
-
 	public GameObject brickBurnEffect;
 
 	private Vector2 initPosition;
+
 
 
 	void Start ()
@@ -52,10 +50,11 @@ public class BoardController : MonoBehaviour
 
 
 
-	private GameObject GetNextFigure() {
-		GameObject figure = figures [UnityEngine.Random.Range(0, figures.Count)];
+	private GameObject GetNextFigure ()
+	{
+		GameObject figure = figures [UnityEngine.Random.Range (0, figures.Count)];
 
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (0, brickTypes.Count)];
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (7, 10)];// [UnityEngine.Random.Range (0, brickTypes.Count)];
 
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
@@ -287,6 +286,5 @@ public class BoardController : MonoBehaviour
 		}
 		return true;
 	}
-
 
 }

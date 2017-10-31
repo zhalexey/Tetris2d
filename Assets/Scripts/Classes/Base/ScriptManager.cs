@@ -17,4 +17,11 @@ public class ScriptManager {
 			return ((GameController)(GameObject.Find ("GameManager").GetComponent ("GameController")));
 		}
 	}
+
+	public static SoundController SoundController
+	{
+		get {
+			return ((SoundController)(GameObject.Find ("SoundManager").GetComponent ("SoundController")));
+		}
+	}
 }

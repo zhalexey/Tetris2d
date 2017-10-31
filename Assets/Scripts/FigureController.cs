@@ -46,10 +46,13 @@ public class FigureController : BaseGameObjectController
 
 		//BoardGizmos.DrawBoxAim (gameObject.transform.position);
 
-		if (Input.GetKeyDown (KeyCode.Alpha1)) {
-			GameObject brickBurnEffect = (GameObject)Instantiate (ScriptManager.BoardController.brickBurnEffect, new Vector2(0,0), Quaternion.identity);
-			Destroy (brickBurnEffect, 5);
+		if (Input.GetKey (KeyCode.Alpha1)) {
+			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.Rotate);
 		}
+		if (Input.GetKey (KeyCode.Alpha2)) {
+			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.BurnLine);
+		}
+
 
 		if (FigureState.Stopped == state) {
 			return;
@@ -117,6 +120,8 @@ public class FigureController : BaseGameObjectController
 			SetFigureTrigger (true);
 			state = FigureState.Rotation;
 			deltaH = gameObject.transform.position.y;
+
+			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.Rotate);
 		}
 	}
 
@@ -127,6 +132,7 @@ public class FigureController : BaseGameObjectController
 			state = FigureState.Stopped;
 			ResetFigureTags ();
 			Destroy (this);
+			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.Falling);
 			ScriptManager.GameController.Respawn ();
 		}
 	}

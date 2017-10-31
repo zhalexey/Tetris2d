@@ -49,7 +49,7 @@ public class BoardHelper
 		foreach (GameObject obj in toDestroy) {
 			FireBrickSpecialEffect (obj);
 			MonoBehaviour.DestroyImmediate(obj);
-
+			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.BurnLine);
 		}
 
 		// 4. Destroy empty figure`s joints
