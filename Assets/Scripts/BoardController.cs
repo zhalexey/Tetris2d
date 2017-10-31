@@ -28,6 +28,8 @@ public class BoardController : MonoBehaviour
 
 	public List<GameObject> figures;
 
+	public List<Sprite> brickTypes;
+
 	private Vector2 initPosition;
 
 
