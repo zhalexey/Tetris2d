@@ -5,6 +5,10 @@ using UnityEngine;
 public class FigureController : BaseGameObjectController
 {
 
+	public enum RotationType {
+		FREE_ROTATE, TWO_DIMENSION, STATIC
+	}
+
 	enum FigureState
 	{
 		Idle,
@@ -16,7 +20,11 @@ public class FigureController : BaseGameObjectController
 
 	;
 
+	public RotationType rotationType;
 
+
+	private const float GRAVITY = 0.125f;
+	private const int ROTATION_DELTA = 10;
 	private const float DELTA_X = 0.028f;
 	public const float FALLING_VELOCITY = -0.2f;
 	private const float FAST_FALLING_VELOCITY = -2f;
@@ -24,6 +32,7 @@ public class FigureController : BaseGameObjectController
 	private FigureState state = FigureState.Idle;
 	private float angle = 0;
 	private float desiredAngle = 0;
+	private bool rotateBack = false;
 
 	private float deltaH;
 	private float maxDeltaH;
@@ -35,7 +44,7 @@ public class FigureController : BaseGameObjectController
 	void Update ()
 	{
 
-		BoardGizmos.DrawBoxAim (gameObject.transform.position);
+		//BoardGizmos.DrawBoxAim (gameObject.transform.position);
 
 
 		if (FigureState.Stopped == state) {
@@ -62,11 +71,7 @@ public class FigureController : BaseGameObjectController
 
 			} else if (Input.GetKey (KeyCode.UpArrow)) {
 				if (FigureState.Idle == state && ScriptManager.BoardController.CanRotate (gameObject)) {
-
-					SetFigureTrigger (true);
-					desiredAngle += 90;
-					state = FigureState.Rotation;
-					deltaH = gameObject.transform.position.y;
+					ApplyRotateRestriction ();
 				}
 
 			} else if (Input.GetKey (KeyCode.DownArrow)) {
@@ -84,6 +89,31 @@ public class FigureController : BaseGameObjectController
 		}
 
 		PerformTransformation ();
+	}
+
+
+	private void ApplyRotateRestriction ()
+	{
+		if (RotationType.STATIC != rotationType) {
+
+			if (RotationType.TWO_DIMENSION == rotationType) {
+				if (angle == 0) {
+					desiredAngle = 90;
+				}
+				else {
+					rotateBack = true;
+					desiredAngle = 0;
+				}
+			}
+			else
+				if (RotationType.FREE_ROTATE == rotationType) {
+					desiredAngle += 90;
+				}
+			
+			SetFigureTrigger (true);
+			state = FigureState.Rotation;
+			deltaH = gameObject.transform.position.y;
+		}
 	}
 
 
@@ -115,7 +145,31 @@ public class FigureController : BaseGameObjectController
 		PerformFallingDown ();
 	}
 
+
 	void PerformRotation ()
+	{
+		if (rotateBack) {
+			PerformRotateBack ();
+		} else {
+			PerformRotateNormal ();
+		}
+	}
+
+
+	void PerformRotateBack ()
+	{
+		if (angle > desiredAngle) {
+			angle -= ROTATION_DELTA;
+			gameObject.transform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
+		}
+		else {
+			StopRotation ();
+			rotateBack = false;
+		}
+	}
+
+
+	void PerformRotateNormal ()
 	{
 		if (angle < desiredAngle) {
 			angle += 10;
@@ -124,15 +178,18 @@ public class FigureController : BaseGameObjectController
 				angle = 0;
 				desiredAngle = 0;
 			}
-		} else {
+		}
+		else {
 			StopRotation ();
 		}
 	}
+
 
 	void StopRotation ()
 	{
 		SetFigureTrigger (false);
 		state = FigureState.Idle;
+
 		//BoardGizmos.ClearLog ();
 		float delta = deltaH - gameObject.transform.position.y;
 		if (delta > maxDeltaH) {
@@ -143,6 +200,7 @@ public class FigureController : BaseGameObjectController
 		}
 		//Debug.Log ("max=" + maxDeltaH + "  min=" + minDeltaH);
 	}
+
 
 	void PerformMoveLeft ()
 	{
@@ -193,7 +251,7 @@ public class FigureController : BaseGameObjectController
 		Transform[] childs = gameObject.transform.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
 			child.tag = BoardController.UNTAGGED;
-			child.GetComponent<Rigidbody2D> ().gravityScale = 0.125f;
+			child.GetComponent<Rigidbody2D> ().gravityScale = GRAVITY;
 		}
 	}
 

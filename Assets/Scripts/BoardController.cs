@@ -24,33 +24,14 @@ public class BoardController : MonoBehaviour
 
 	public static bool[,] grid = new bool[BOARD_HEIGHT, BOARD_WIDTH];
 
-	/*
-	public static bool[,] grid = new bool[BOARD_HEIGHT, BOARD_WIDTH] {
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{ true,  true,  true, false,  true,  true,  true,  true,  true,  true,  true},
-		{ true,  true,  true, false,  true,  true,  true,  true,  true,  true,  true},
-		{false, false, false, false, false, false, false, false, false, false, false},
-		{false,  false, false, false, false, false, false, false, false, false, false}
-	};*/
-
-	public GameObject brick;
 	public GameObject figureBoardTest;
 
+	public List<GameObject> figures;
 
-	int countHits;
 
 	void Start ()
 	{
-		Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
-		//InitBoard ();
-		//DrawBoard ();
+		//Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
 	}
 
 
@@ -59,26 +40,14 @@ public class BoardController : MonoBehaviour
 		CheckBoardStatus ();
 	}
 
+
+	//--------------------------------------------- Next figure ------------------------------------------
+
+	public GameObject GetNextFigure() {
+		return figures [UnityEngine.Random.Range(0, figures.Count)];
+	}
+
 	//--------------------------------------------- Board instrument methods -----------------------------
-
-	private void InitBoard ()
-	{
-		for (int i = 0; i < BOARD_HEIGHT; i++)
-			for (int j = 0; j < BOARD_WIDTH; j++) {
-				grid [i, j] = UnityEngine.Random.value < 0.5;
-			}
-	}
-
-	void DrawBoard ()
-	{
-		for (int i = 0; i < BOARD_HEIGHT; i++)
-			for (int j = 0; j < BOARD_WIDTH; j++) {
-				Vector2 pos = getPos (j, i);
-				if (grid [i, j]) {
-					Instantiate (brick, new Vector3 (pos.x, pos.y, 0), Quaternion.identity);
-				}
-			}
-	}
 
 
 	/*
@@ -244,20 +213,5 @@ public class BoardController : MonoBehaviour
 		return true;
 	}
 
-
-
-
-	//--------------------------------------- Debug methods ---------------------------------------------------
-
-	public void DebugGrid ()
-	{
-		for (int i = 0; i < BOARD_HEIGHT; i++) {
-			string line = "";
-			for (int j = 0; j < BOARD_WIDTH; j++) {
-				line += grid [i, j] ? "1" : "0";
-			}
-			Debug.Log (line);
-		}
-	}
 
 }

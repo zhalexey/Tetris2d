@@ -137,12 +137,17 @@ public class BoardHelper
 				
 				bricks.Add (child.gameObject);
 				FixedJoint2D joint = child.gameObject.GetComponent<FixedJoint2D> ();
-				Rigidbody2D connectedBody = joint.connectedBody;
 
-				if (connectedBody == null) {
+				if (joint != null) {
+					Rigidbody2D connectedBody = joint.connectedBody;
+					if (connectedBody == null) {
+						groups.Add (new Group (bricks));
+						bricks = new List<GameObject> ();
+						jointsToDestroy.Add (joint);
+					}
+				} else {
 					groups.Add (new Group (bricks));
 					bricks = new List<GameObject> ();
-					jointsToDestroy.Add (joint);
 				}
 			}
 		}
