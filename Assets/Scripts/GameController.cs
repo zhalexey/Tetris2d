@@ -6,24 +6,39 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
+	private enum State
+	{
+		Started,
+		Finished
+	}
+
+	private State state;
+
 	private int count = 100;
+
 
 	void Start ()
 	{
+		state = State.Started;
+
 		Respawn ();
 	}
 
 
 	public void Respawn ()
 	{
-		if (count-- > 0) {
-			Vector2 pos = ScriptManager.BoardController.getPos (BoardController.BOARD_WIDTH / 2 - 1, 1);
-
-			var figure = GetNextFigure ();
-
-			Instantiate (figure, new Vector3 (pos.x, pos.y, 0), Quaternion.identity);
-			figure.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, -0.2f);
+		if (count-- == 0) {
+			state = State.Finished;
 		}
+			
+
+		if (State.Started == state) {
+			bool isRespawnAllowed = ScriptManager.BoardController.Respawn ();
+			if (!isRespawnAllowed) {
+				state = State.Finished;
+			}
+		}
+
 	}
 
 

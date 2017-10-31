@@ -28,9 +28,12 @@ public class BoardController : MonoBehaviour
 
 	public List<GameObject> figures;
 
+	private Vector2 initPosition;
+
 
 	void Start ()
 	{
+		initPosition = getPos (new Vector2 (BoardController.BOARD_WIDTH / 2 - 1, 0));
 		//Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
 	}
 
@@ -43,10 +46,21 @@ public class BoardController : MonoBehaviour
 
 	//--------------------------------------------- Next figure ------------------------------------------
 
+
 	public GameObject GetNextFigure() {
 		return figures [UnityEngine.Random.Range(0, figures.Count)];
 	}
 
+	public bool Respawn ()
+	{
+		var figure = GetNextFigure ();
+		if (!CanBePlaced (figure, initPosition)) {
+			return false;
+		}
+		Instantiate (figure, new Vector3 (initPosition.x, initPosition.y, 0), Quaternion.identity);
+		figure.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, FigureController.FALLING_VELOCITY);
+		return true;
+	}
 	//--------------------------------------------- Board instrument methods -----------------------------
 
 
@@ -59,6 +73,12 @@ public class BoardController : MonoBehaviour
 		pos.x = (x - BOARD_HALF_WIDTH) * BRICK_SIZE;
 		pos.y = (-y + BOARD_HALF_HEIGHT - 1) * BRICK_SIZE;
 		return pos;
+	}
+
+
+	public Vector2 getPos (Vector2 pos)
+	{
+		return getPos ((int)pos.x, (int)pos.y);
 	}
 
 
@@ -142,6 +162,21 @@ public class BoardController : MonoBehaviour
 		figureClone.transform.position = pos;
 
 		if (!CanFigureStay (figureClone)) {
+			Destroy (figureClone);
+			return true;
+		}
+
+		Destroy (figureClone);
+		return false;
+	}
+
+
+	public bool CanBePlaced (GameObject figure, Vector2 pos)
+	{
+		GameObject figureClone = Instantiate (figure);
+		figureClone.transform.position = pos;
+
+		if (CanFigureStay (figureClone)) {
 			Destroy (figureClone);
 			return true;
 		}
