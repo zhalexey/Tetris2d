@@ -46,6 +46,10 @@ public class FigureController : BaseGameObjectController
 
 		//BoardGizmos.DrawBoxAim (gameObject.transform.position);
 
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
+			GameObject brickBurnEffect = (GameObject)Instantiate (ScriptManager.BoardController.brickBurnEffect, new Vector2(0,0), Quaternion.identity);
+			Destroy (brickBurnEffect, 5);
+		}
 
 		if (FigureState.Stopped == state) {
 			return;

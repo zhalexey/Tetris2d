@@ -55,7 +55,14 @@ public class BoardHelper
 
 		// 3. Destroy marked 
 		foreach (GameObject obj in toDestroy) {
-			MonoBehaviour.DestroyImmediate (obj);
+			FireBrickSpecialEffect (obj);
+			//obj.GetComponent<Renderer> ().enabled = false;
+			//obj.GetComponent<Collider2D> ().enabled = false;
+			//obj.GetComponent<Rigidbody2D> ().isKinematic = true;
+			//MonoBehaviour.Destroy (obj.GetComponent<Rigidbody2D> ());
+			//MonoBehaviour.Destroy (obj);
+			MonoBehaviour.Destroy(obj);
+
 		}
 
 		// 4. Destroy empty figure`s joints
@@ -66,6 +73,23 @@ public class BoardHelper
 
 		// 5. Divide into figures
 		DivideFigures (parents);
+	}
+
+
+	private void FireBrickSpecialEffect (GameObject obj)
+	{
+		// ignore parent figure
+		if (obj.name.Contains ("Figure")) {
+			return;
+		}
+
+		GameObject effect = MonoBehaviour.Instantiate (ScriptManager.BoardController.brickBurnEffect, obj.transform.position, Quaternion.identity);
+
+		Material material = effect.GetComponent<ParticleSystemRenderer> ().material;
+		Texture2D texture = obj.GetComponent<SpriteRenderer> ().sprite.texture;
+		material.SetTexture ("_MainTex", texture);
+
+		MonoBehaviour.Destroy (effect, effect.GetComponent<ParticleSystem> ().main.duration);
 	}
 
 

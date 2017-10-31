@@ -24,11 +24,13 @@ public class BoardController : MonoBehaviour
 
 	public static bool[,] grid = new bool[BOARD_HEIGHT, BOARD_WIDTH];
 
-	public GameObject figureBoardTest;
+	//public GameObject figureBoardTest;
 
 	public List<GameObject> figures;
 
 	public List<Sprite> brickTypes;
+
+	public GameObject brickBurnEffect;
 
 	private Vector2 initPosition;
 
@@ -97,6 +99,8 @@ public class BoardController : MonoBehaviour
 		figure.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, FigureController.FALLING_VELOCITY);
 		return true;
 	}
+
+
 	//--------------------------------------------- Board instrument methods -----------------------------
 
 
