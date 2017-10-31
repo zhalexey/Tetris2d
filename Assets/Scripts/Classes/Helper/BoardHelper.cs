@@ -31,17 +31,9 @@ public class BoardHelper
 			// 1. Mark brick to destroy
 			toDestroy.Add (hit.gameObject);
 
-			// 2. Mark parent figure to destroy if it is empty
+			// 2. Mark parent figure joints to destroy if it is empty
 			GameObject parent = hit.gameObject.transform.parent.gameObject;
-
-			// 2.5 Mark fixed joints of parent to destroy
-			FixedJoint2D[] parentJoints = parent.GetComponents<FixedJoint2D> ();
-			foreach (FixedJoint2D joint in parentJoints) {
-				Rigidbody2D childBrickBody = joint.connectedBody;
-				if (childBrickBody != null && childBrickBody.gameObject == hit.gameObject) {
-					toDestroyJoints.Add(joint);
-				}
-			}
+			toDestroyJoints.AddRange(GetParentJointsToDestroy (hit, parent));
 
 			Transform[] childObjs = parent.GetComponentsInChildren<Transform> ();
 
@@ -56,12 +48,7 @@ public class BoardHelper
 		// 3. Destroy marked 
 		foreach (GameObject obj in toDestroy) {
 			FireBrickSpecialEffect (obj);
-			//obj.GetComponent<Renderer> ().enabled = false;
-			//obj.GetComponent<Collider2D> ().enabled = false;
-			//obj.GetComponent<Rigidbody2D> ().isKinematic = true;
-			//MonoBehaviour.Destroy (obj.GetComponent<Rigidbody2D> ());
-			//MonoBehaviour.Destroy (obj);
-			MonoBehaviour.Destroy(obj);
+			MonoBehaviour.DestroyImmediate(obj);
 
 		}
 
@@ -75,6 +62,19 @@ public class BoardHelper
 		DivideFigures (parents);
 	}
 
+
+	private List<FixedJoint2D> GetParentJointsToDestroy (Collider2D hit, GameObject parent)
+	{
+		List<FixedJoint2D> joints = new List<FixedJoint2D> ();
+		FixedJoint2D[] parentJoints = parent.GetComponents<FixedJoint2D> ();
+		foreach (FixedJoint2D joint in parentJoints) {
+			Rigidbody2D childBrickBody = joint.connectedBody;
+			if (childBrickBody != null && childBrickBody.gameObject == hit.gameObject) {
+				joints.Add (joint);
+			}
+		}
+		return joints;
+	}
 
 	private void FireBrickSpecialEffect (GameObject obj)
 	{
