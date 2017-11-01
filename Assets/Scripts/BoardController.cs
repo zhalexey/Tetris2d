@@ -81,7 +81,7 @@ public class BoardController : MonoBehaviour
 	{
 		GameObject figure = figures [UnityEngine.Random.Range (0, figures.Count)];
 
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (7, 10)];// [UnityEngine.Random.Range (0, brickTypes.Count)];
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (5, 10)];// [UnityEngine.Random.Range (0, brickTypes.Count)];
 
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
