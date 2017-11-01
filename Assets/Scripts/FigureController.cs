@@ -32,7 +32,7 @@ public class FigureController : BaseGameObjectController
 	private FigureState state = FigureState.Idle;
 	private float angle = 0;
 	private float desiredAngle = 0;
-	private bool rotateBack = false;
+	private bool rotateFast = false;
 
 	private float deltaH;
 	private float maxDeltaH;
@@ -108,8 +108,8 @@ public class FigureController : BaseGameObjectController
 					desiredAngle = 90;
 				}
 				else {
-					rotateBack = true;
-					desiredAngle = 0;
+					rotateFast = true;
+					desiredAngle = 360;
 				}
 			}
 			else
@@ -158,23 +158,27 @@ public class FigureController : BaseGameObjectController
 
 	void PerformRotation ()
 	{
-		if (rotateBack) {
-			PerformRotateBack ();
+		if (rotateFast) {
+			PerformRotateFast ();
 		} else {
 			PerformRotateNormal ();
 		}
 	}
 
 
-	void PerformRotateBack ()
+	void PerformRotateFast ()
 	{
-		if (angle > desiredAngle) {
-			angle -= ROTATION_DELTA;
+		if (angle < desiredAngle) {
+			angle += 15;
 			gameObject.transform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
+			if (angle == 360) {
+				angle = 0;
+				desiredAngle = 0;
+			}
 		}
 		else {
 			StopRotation ();
-			rotateBack = false;
+			rotateFast = false;
 		}
 	}
 
