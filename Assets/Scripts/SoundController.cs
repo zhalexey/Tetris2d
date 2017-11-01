@@ -14,17 +14,14 @@ public class SoundController: MonoBehaviour
 	public AudioClip fallingSound;
 	public AudioClip burnLineSound;
 
+	public AudioClip calmMusic;
+	public AudioClip energyMusic;
+
 
 	public void PlaySound (SoundAction action)
 	{
 
-		AudioSource freeSource = null;
-		AudioSource[] sources = gameObject.GetComponents<AudioSource> ();
-		foreach (AudioSource source in sources) {
-			if (!source.isPlaying) {
-				freeSource = source;
-			}
-		}
+		AudioSource freeSource = GetFreeAudioSource ();
 
 		if (freeSource == null) {
 			return;
@@ -46,5 +43,30 @@ public class SoundController: MonoBehaviour
 	}
 
 
+	private AudioSource GetFreeAudioSource ()
+	{
+		AudioSource[] sources = gameObject.GetComponents<AudioSource> ();
+		foreach (AudioSource source in sources) {
+			if (!source.isPlaying) {
+				return (source);
+			}
+		}
+		return null;
+	}
+
+
+	public void PlayCalmMusic() {
+		AudioSource musicAudioSource = ScriptManager.MusicAudioSource;
+		musicAudioSource.Stop ();
+		musicAudioSource.loop = true;
+		musicAudioSource.PlayOneShot (calmMusic);
+	}
+
+	public void PlayEnergyMusic() {
+		AudioSource musicAudioSource = ScriptManager.MusicAudioSource;
+		musicAudioSource.Stop ();
+		musicAudioSource.loop = true;
+		musicAudioSource.PlayOneShot (energyMusic);
+	}
 
 }

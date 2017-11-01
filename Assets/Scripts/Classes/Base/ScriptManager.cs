@@ -24,4 +24,11 @@ public class ScriptManager {
 			return ((SoundController)(GameObject.Find ("SoundManager").GetComponent ("SoundController")));
 		}
 	}
+
+	public static AudioSource MusicAudioSource
+	{
+		get {
+			return GameObject.Find ("MainCamera").GetComponent<AudioSource>();
+		}
+	}
 }

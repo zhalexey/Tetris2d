@@ -6,14 +6,20 @@ using System;
 public class BoardController : MonoBehaviour
 {
 
+
 	public const int BOARD_WIDTH = 11;
-	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
 	public const int BOARD_HEIGHT = 12;
+	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
 	public static int BOARD_HALF_HEIGHT = BOARD_HEIGHT / 2;
 	public static float BRICK_SIZE = 0.3f;
 	public static float BRICK_HALF_SIZE = BRICK_SIZE / 2 - 0.02f;
 	private const string PLAYER_TAG = "Player";
 	public const string UNTAGGED = "Untagged";
+
+	private int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT - 1;
+	private int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 2;
+
+
 
 
 	private const float MIN_DOWN_DISTANCE = 0.01f;
@@ -31,10 +37,15 @@ public class BoardController : MonoBehaviour
 
 	private Vector2 initPosition;
 
+	private bool calmZoneState;
+
 
 
 	void Start ()
 	{
+		calmZoneState = true;
+		ScriptManager.SoundController.PlayCalmMusic ();
+
 		initPosition = getPos (new Vector2 (BoardController.BOARD_WIDTH / 2 - 1, 0));
 		//Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
 	}
@@ -43,8 +54,24 @@ public class BoardController : MonoBehaviour
 	void Update ()
 	{
 		CheckBoardStatus ();
+		ApplyMusic ();
 	}
 
+
+	private void ApplyMusic ()
+	{
+
+		MusicZoneHelper musicZone = CheckMusicZone ();
+
+		if (calmZoneState && musicZone.isEnergyZoneReached ()) {
+			calmZoneState = false;
+			ScriptManager.SoundController.PlayEnergyMusic ();
+		} else if (!calmZoneState && musicZone.isCalmZoneReached ()) {
+			calmZoneState = true;
+			ScriptManager.SoundController.PlayCalmMusic ();
+		}
+
+	}
 
 	//--------------------------------------------- Next figure ------------------------------------------
 
@@ -69,11 +96,12 @@ public class BoardController : MonoBehaviour
 
 	private GameObject GetNextFigure_Debug ()
 	{
-		GameObject figure;
-		do {
-			figure = ScriptManager.BoardController.GetNextFigure ();
-		} while (!ContainsName (figure.name, new string[2]{ "Figure_Z", "Figure_I" }));
-		return figure;
+		foreach (GameObject figure in figures) {
+			if (ContainsName (figure.name, new string[1]{ "Figure_IS" })) {
+				return figure;
+			}
+		}
+		throw new Exception ("Figure not found");
 	}
 
 
@@ -129,11 +157,13 @@ public class BoardController : MonoBehaviour
 		return new Vector2 (BOARD_HALF_WIDTH + absPos.x / BRICK_SIZE, BOARD_HALF_HEIGHT - 1 - absPos.y / BRICK_SIZE);
 	}
 
+
 	//----------------------------------------------------------Check board status--------------------------------------
 
-	void CheckBoardStatus ()
+
+	private void CheckBoardStatus ()
 	{	
-		
+
 		for (int i = BOARD_HEIGHT; i > 0; i--) {
 			int counter = 0;
 
@@ -156,6 +186,33 @@ public class BoardController : MonoBehaviour
 			}
 		}
 	}
+
+
+	private MusicZoneHelper CheckMusicZone ()
+	{
+		bool isEnergyZoneReached = CheckZoneReached (ENERGY_ZONE_HEIGHT);
+		bool isCalmZoneReached = CheckZoneReached (CALM_ZONE_HEIGHT - 1);
+		return new MusicZoneHelper (isEnergyZoneReached, isCalmZoneReached);
+	}
+
+
+	private bool CheckZoneReached (int height)
+	{
+		Vector2 pointA = getPos (0, height);
+		Vector2 pointB = getPos (BOARD_WIDTH - 1, height);
+		Collider2D[] hits = Physics2D.OverlapAreaAll (pointA, pointB);
+		if (hits.Length != 0) {
+			foreach (Collider2D hit in hits) {
+				if (isNotPlayerCollider (hit)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	//--------------------------------------- validations --------------------------------------
 
 
 	private bool isNotPlayerCollider (Collider2D hit)
