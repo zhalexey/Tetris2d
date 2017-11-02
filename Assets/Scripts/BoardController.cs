@@ -7,7 +7,7 @@ public class BoardController : MonoBehaviour
 {
 
 
-	public const int BOARD_WIDTH = 5;
+	public const int BOARD_WIDTH = 11;
 	public const int BOARD_HEIGHT = 12;
 	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
 	public static int BOARD_HALF_HEIGHT = BOARD_HEIGHT / 2;
@@ -80,19 +80,21 @@ public class BoardController : MonoBehaviour
 	private GameObject GetNextFigure ()
 	{
 		GameObject figure = figures [UnityEngine.Random.Range (0, figures.Count)];
+		return figure;
+	}
 
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (5, 10)];// [UnityEngine.Random.Range (0, brickTypes.Count)];
 
+	void RandomizeFigureTextures (GameObject figure)
+	{
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (8, 10)];
+		// [UnityEngine.Random.Range (0, brickTypes.Count)];
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
 			if (figure != child.gameObject) {
 				child.GetComponent<SpriteRenderer> ().sprite = sprite;
 			}
 		}
-
-		return figure;
 	}
-
 
 	private GameObject GetNextFigure_Debug ()
 	{
@@ -122,8 +124,10 @@ public class BoardController : MonoBehaviour
 		if (!CanBePlaced (figure, initPosition)) {
 			return false;
 		}
-		Instantiate (figure, new Vector3 (initPosition.x, initPosition.y, 0), Quaternion.identity);
-		figure.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, FigureController.FALLING_VELOCITY);
+		GameObject newFigure = Instantiate (figure, new Vector3 (initPosition.x, initPosition.y, 0), Quaternion.identity);
+		RandomizeFigureTextures (newFigure);
+		newFigure.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, FigureController.FALLING_VELOCITY);
+
 		return true;
 	}
 
