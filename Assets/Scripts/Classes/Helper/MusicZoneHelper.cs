@@ -19,7 +19,7 @@ public class MusicZoneHelper
 		return energyZoneReached;
 	}
 
-	public bool isCalmZoneReached() {
+	public bool isCalmZoneNotReached() {
 		return !calmZoneReached;
 	}
 

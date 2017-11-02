@@ -59,14 +59,16 @@ public class SoundController: MonoBehaviour
 		AudioSource musicAudioSource = ScriptManager.MusicAudioSource;
 		musicAudioSource.Stop ();
 		musicAudioSource.loop = true;
-		musicAudioSource.PlayOneShot (calmMusic);
+		musicAudioSource.clip = calmMusic;
+		musicAudioSource.Play ();
 	}
 
 	public void PlayEnergyMusic() {
 		AudioSource musicAudioSource = ScriptManager.MusicAudioSource;
 		musicAudioSource.Stop ();
 		musicAudioSource.loop = true;
-		musicAudioSource.PlayOneShot (energyMusic);
+		musicAudioSource.clip = energyMusic;
+		musicAudioSource.Play ();
 	}
 
 }

@@ -7,7 +7,7 @@ public class BoardController : MonoBehaviour
 {
 
 
-	public const int BOARD_WIDTH = 11;
+	public const int BOARD_WIDTH = 5;
 	public const int BOARD_HEIGHT = 12;
 	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
 	public static int BOARD_HALF_HEIGHT = BOARD_HEIGHT / 2;
@@ -16,8 +16,8 @@ public class BoardController : MonoBehaviour
 	private const string PLAYER_TAG = "Player";
 	public const string UNTAGGED = "Untagged";
 
-	private int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT - 1;
-	private int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 2;
+	private int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT;
+	private int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 3;
 
 
 
@@ -66,7 +66,7 @@ public class BoardController : MonoBehaviour
 		if (calmZoneState && musicZone.isEnergyZoneReached ()) {
 			calmZoneState = false;
 			ScriptManager.SoundController.PlayEnergyMusic ();
-		} else if (!calmZoneState && musicZone.isCalmZoneReached ()) {
+		} else if (!calmZoneState && musicZone.isCalmZoneNotReached ()) {
 			calmZoneState = true;
 			ScriptManager.SoundController.PlayCalmMusic ();
 		}
@@ -190,21 +190,23 @@ public class BoardController : MonoBehaviour
 
 	private MusicZoneHelper CheckMusicZone ()
 	{
-		bool isEnergyZoneReached = CheckZoneReached (ENERGY_ZONE_HEIGHT);
-		bool isCalmZoneReached = CheckZoneReached (CALM_ZONE_HEIGHT - 1);
+		bool isEnergyZoneReached = CheckZoneReached (0, ENERGY_ZONE_HEIGHT);
+		bool isCalmZoneReached = CheckZoneReached (0, CALM_ZONE_HEIGHT - 1);
 		return new MusicZoneHelper (isEnergyZoneReached, isCalmZoneReached);
 	}
 
 
-	private bool CheckZoneReached (int height)
+	private bool CheckZoneReached (int fromHight , int toHight)
 	{
-		Vector2 pointA = getPos (0, height);
-		Vector2 pointB = getPos (BOARD_WIDTH - 1, height);
-		Collider2D[] hits = Physics2D.OverlapAreaAll (pointA, pointB);
-		if (hits.Length != 0) {
-			foreach (Collider2D hit in hits) {
-				if (isNotPlayerCollider (hit)) {
-					return true;
+		for (int i = fromHight; i < toHight; i++) {
+			Vector2 pointA = getPos (0, i);
+			Vector2 pointB = getPos (BOARD_WIDTH - 1, i);
+			Collider2D[] hits = Physics2D.OverlapAreaAll (pointA, pointB);
+			if (hits.Length != 0) {
+				foreach (Collider2D hit in hits) {
+					if (isNotPlayerCollider (hit)) {
+						return true;
+					}
 				}
 			}
 		}
