@@ -8,7 +8,7 @@ public class BoardController : MonoBehaviour
 
 
 	public const int BOARD_WIDTH = 11;
-	public const int BOARD_HEIGHT = 12;
+	public const int BOARD_HEIGHT = 15;
 	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
 	public static int BOARD_HALF_HEIGHT = BOARD_HEIGHT / 2;
 	public static float BRICK_SIZE = 0.3f;
@@ -29,7 +29,7 @@ public class BoardController : MonoBehaviour
 
 	public static bool[,] grid = new bool[BOARD_HEIGHT, BOARD_WIDTH];
 
-	//public GameObject figureBoardTest;
+	public List<GameObject> levelFigures;
 
 	public List<GameObject> figures;
 	public List<Sprite> brickTypes;
@@ -47,7 +47,11 @@ public class BoardController : MonoBehaviour
 		ScriptManager.SoundController.PlayCalmMusic ();
 
 		initPosition = getPos (new Vector2 (BoardController.BOARD_WIDTH / 2 - 1, 0));
-		//Instantiate (figureBoardTest, new Vector3 (0, -1.8f, 0), Quaternion.identity);
+
+		// level testing
+		foreach (GameObject figure in levelFigures) {
+			Instantiate (figure, new Vector3 (0, 0, 0), Quaternion.identity);
+		}
 	}
 
 
@@ -86,7 +90,7 @@ public class BoardController : MonoBehaviour
 
 	void RandomizeFigureTextures (GameObject figure)
 	{
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (8, 10)];
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (5, 8)];
 		// [UnityEngine.Random.Range (0, brickTypes.Count)];
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {

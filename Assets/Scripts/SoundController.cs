@@ -17,6 +17,8 @@ public class SoundController: MonoBehaviour
 	public AudioClip calmMusic;
 	public AudioClip energyMusic;
 
+	public bool musicOff = true;
+
 
 	public void PlaySound (SoundAction action)
 	{
@@ -56,6 +58,9 @@ public class SoundController: MonoBehaviour
 
 
 	public void PlayCalmMusic() {
+		if (musicOff) {
+			return;
+		}
 		AudioSource musicAudioSource = ScriptManager.MusicAudioSource;
 		musicAudioSource.Stop ();
 		musicAudioSource.loop = true;
@@ -64,6 +69,9 @@ public class SoundController: MonoBehaviour
 	}
 
 	public void PlayEnergyMusic() {
+		if (musicOff) {
+			return;
+		}
 		AudioSource musicAudioSource = ScriptManager.MusicAudioSource;
 		musicAudioSource.Stop ();
 		musicAudioSource.loop = true;

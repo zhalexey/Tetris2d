@@ -28,7 +28,7 @@ public class ScriptManager {
 	public static AudioSource MusicAudioSource
 	{
 		get {
-			return GameObject.Find ("MainCamera").GetComponent<AudioSource>();
+			return GameObject.Find ("_MainCamera").GetComponent<AudioSource>();
 		}
 	}
 }
