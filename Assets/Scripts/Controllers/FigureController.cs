@@ -43,20 +43,20 @@ public class FigureController : BaseGameObjectController
 
 	void Update ()
 	{
-
-		//BoardGizmos.DrawBoxAim (gameObject.transform.position);
-
-		if (Input.GetKey (KeyCode.Alpha1)) {
-			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.Rotate);
-		}
-		if (Input.GetKey (KeyCode.Alpha2)) {
-			ScriptManager.SoundController.PlaySound (SoundController.SoundAction.BurnLine);
-		}
-
-
 		if (FigureState.Stopped == state) {
 			return;
 		}
+
+		// Level menu invokation
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			ScriptManager.GameController.PauseResume ();
+		}
+
+
+		if (isPause) {
+			return;
+		}
+
 
 		if (FigureState.Idle == state || FigureState.MoveDown == state) {
 

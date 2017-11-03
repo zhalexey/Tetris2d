@@ -7,7 +7,7 @@ public class ScriptManager {
 	public static BoardController BoardController
 	{
 		get{
-			return (BoardController)GameObject.Find ("Board").GetComponent ("BoardController");
+			return (BoardController)GameObject.Find ("BoardManager").GetComponent ("BoardController");
 		}
 	}
 
@@ -28,7 +28,15 @@ public class ScriptManager {
 	public static AudioSource MusicAudioSource
 	{
 		get {
-			return GameObject.Find ("_MainCamera").GetComponent<AudioSource>();
+			return GameObject.Find ("Camera").GetComponent<AudioSource>();
 		}
 	}
+
+	public static LevelMenuController LevelMenuController
+	{
+		get {
+			return ((LevelMenuController)(GameObject.Find ("LevelMenuManager").GetComponent ("LevelMenuController")));
+		}
+	}
+
 }

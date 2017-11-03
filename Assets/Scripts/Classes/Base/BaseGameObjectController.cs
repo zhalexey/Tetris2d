@@ -5,6 +5,8 @@ using UnityEngine;
 public class BaseGameObjectController : MonoBehaviour
 {
 
+	public bool isPause = false;
+
 
 	void FixedUpdate ()
 	{
