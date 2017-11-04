@@ -56,9 +56,9 @@ public class GameController : MonoBehaviour
 
 	private void Resume ()
 	{
-		Time.timeScale = 1;
-		SetPause (false);
-		isGamePaused = false;
+		ContinueGameFlow ();
+		ScriptManager.SoundController.PauseMenuTheme ();
+		ScriptManager.SoundController.PlayGameTheme ();
 		ScriptManager.LevelMenuController.DeactivateMenu ();
 	}
 
@@ -67,7 +67,15 @@ public class GameController : MonoBehaviour
 		Time.timeScale = 0;
 		SetPause (true);
 		isGamePaused = true;
+		ScriptManager.SoundController.PauseGameTheme ();
+		ScriptManager.SoundController.PlayMenuTheme ();
 		ScriptManager.LevelMenuController.ActivateMenu ();
+	}
+
+	public void ContinueGameFlow () {
+		Time.timeScale = 1;
+		SetPause (false);
+		isGamePaused = false;
 	}
 
 	public void PauseResume ()
@@ -78,10 +86,5 @@ public class GameController : MonoBehaviour
 			Resume ();
 	}
 
-
-	void Update ()
-	{
-		
-	}
 
 }

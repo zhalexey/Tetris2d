@@ -25,13 +25,6 @@ public class ScriptManager {
 		}
 	}
 
-	public static AudioSource MusicAudioSource
-	{
-		get {
-			return GameObject.Find ("Camera").GetComponent<AudioSource>();
-		}
-	}
-
 	public static LevelMenuController LevelMenuController
 	{
 		get {
