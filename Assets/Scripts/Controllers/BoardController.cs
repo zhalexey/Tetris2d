@@ -45,13 +45,15 @@ public class BoardController : MonoBehaviour
 	private bool isCreated;
 
 
+	void Awake() {
+		initPosition = getPos (new Vector2 (BoardController.BOARD_WIDTH / 2 - 1, 0));
+	}
+
 	void Start ()
 	{
 		coinsCount = 0;
 		calmZoneState = true;
 		ScriptManager.SoundController.PlayCalmMusic ();
-
-		initPosition = getPos (new Vector2 (BoardController.BOARD_WIDTH / 2 - 1, 0));
 
 		// level testing
 		foreach (GameObject figure in levelFigures) {
