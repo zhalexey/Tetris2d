@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class GameController : MonoBehaviour
@@ -12,15 +13,19 @@ public class GameController : MonoBehaviour
 		Finished
 	}
 
+	private const int TIME_OUT = 5 * 60;
+	private const int COINS_NUMBER = 17;
+
+	public GameObject timeScale;
+
 	private State state;
-
-	private int count = 100;
-
+	private float currentTime;
 	private bool isGamePaused;
 
 
 	void Start ()
 	{
+		currentTime = Time.time;
 		state = State.Started;
 		isGamePaused = false;
 
@@ -30,20 +35,49 @@ public class GameController : MonoBehaviour
 
 	public void Respawn ()
 	{
-		if (count-- == 0) {
-			state = State.Finished;
-		}
-			
-
 		if (State.Started == state) {
 			bool isRespawnAllowed = ScriptManager.BoardController.Respawn ();
 			if (!isRespawnAllowed) {
 				state = State.Finished;
+				ScriptManager.LevelMenuController.ActivateGameOverMenu ();
 			}
 		}
-
 	}
 
+
+	void Update() {
+		if (State.Started == state) {
+
+			if (!ValidateTimeOut ()) {
+				state = State.Finished;
+				StopTimeFlow ();
+				ScriptManager.LevelMenuController.ActivateTimeOutMenu ();
+				return;
+			}
+
+			if (ValidateCoinsBorrowed ()) {
+				state = State.Finished;
+				StopTimeFlow ();
+				ScriptManager.LevelMenuController.ActivateNextLevelMenu ();
+			}
+
+		}
+	}
+
+	private bool ValidateCoinsBorrowed() {
+		return ScriptManager.BoardController.ValidateCoinsBorrowed(COINS_NUMBER);
+	}
+
+	private bool ValidateTimeOut ()
+	{
+		Image timeScaleImage = timeScale.GetComponent<Image> ();
+		float deltaTime = Time.time - currentTime;
+		timeScaleImage.fillAmount = deltaTime / TIME_OUT;
+		if (deltaTime >= TIME_OUT) {
+			return false;
+		}
+		return true;
+	}
 
 	private void SetPause (bool value)
 	{
@@ -56,23 +90,28 @@ public class GameController : MonoBehaviour
 
 	private void Resume ()
 	{
-		ContinueGameFlow ();
+		ContinueTimeFlow ();
 		ScriptManager.SoundController.PauseMenuTheme ();
 		ScriptManager.SoundController.PlayGameTheme ();
 		ScriptManager.LevelMenuController.DeactivateMenu ();
 	}
 
-	private void Pause ()
+	void StopTimeFlow ()
 	{
 		Time.timeScale = 0;
 		SetPause (true);
 		isGamePaused = true;
+	}
+
+	private void Pause ()
+	{
+		StopTimeFlow ();
 		ScriptManager.SoundController.PauseGameTheme ();
 		ScriptManager.SoundController.PlayMenuTheme ();
 		ScriptManager.LevelMenuController.ActivateMenu ();
 	}
 
-	public void ContinueGameFlow () {
+	public void ContinueTimeFlow () {
 		Time.timeScale = 1;
 		SetPause (false);
 		isGamePaused = false;

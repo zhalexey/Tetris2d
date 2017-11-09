@@ -1,14 +1,22 @@
 ﻿using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelMenuController : MonoBehaviour
 {
+	private const string TIME_OVER = "Time is over";
+	private const string PLACE_OVER = "Place is over";
+
 	public GameObject musicOnBtn;
 	public GameObject musicOffBtn;
 	public GameObject soundOnBtn;
 	public GameObject soundOffBtn;
 
-	public GameObject canvas;
+	public GameObject menuCanvas;
+	public GameObject gameOverMenuCanvas;
+	public GameObject nextLevelMenuCanvas;
+	public Text menuHeaderText;
+
 
 	void Start() {
 		UpdateAudioControllers ();
@@ -31,27 +39,54 @@ public class LevelMenuController : MonoBehaviour
 	}
 
 	public void ActivateMenu() {
-		canvas.SetActive (true);
+		menuCanvas.SetActive (true);
 	}
 
 	public void DeactivateMenu ()
 	{
-		canvas.SetActive (false);
+		menuCanvas.SetActive (false);
 		UpdateAudioControllers ();
+	}
+
+	public void ActivateGameOverMenu() {
+		menuHeaderText.text = PLACE_OVER;
+		gameOverMenuCanvas.SetActive (true);
+	}
+
+	public void ActivateTimeOutMenu() {
+		menuHeaderText.text = TIME_OVER;
+		gameOverMenuCanvas.SetActive (true);
+	}
+
+	public void ActivateNextLevelMenu() {
+		nextLevelMenuCanvas.SetActive (true);
+	}
+
+	public void DeactivateNextLevelMenu() {
+		nextLevelMenuCanvas.SetActive (false);
+	}
+
+	public void DeactivateGameOverMenu ()
+	{
+		gameOverMenuCanvas.SetActive (false);
 	}
 
 	public void OnBackToMainMenuClick ()
 	{
 		DeactivateMenu ();
-		ScriptManager.GameController.ContinueGameFlow ();
+		DeactivateGameOverMenu ();
+		DeactivateNextLevelMenu ();
+		ScriptManager.GameController.ContinueTimeFlow ();
 		SceneManager.LoadScene ("MainMenu");
 	}
 
-	public void SwitchMusicOff ()
-	{
-		SetMusicBtnOff ();
-		ScriptManager.SoundController.MusicOff ();
+	public void OnRetry() {
+		ScriptManager.GameController.ContinueTimeFlow ();
+		DeactivateGameOverMenu ();
+		SceneManager.LoadScene ("Level1");
 	}
+
+	//---------------------------------- music / sound ------------------------------
 
 	void SetMusicBtnOff ()
 	{
@@ -63,6 +98,12 @@ public class LevelMenuController : MonoBehaviour
 	{
 		musicOffBtn.SetActive (false);
 		musicOnBtn.SetActive (true);
+	}
+
+	public void SwitchMusicOff ()
+	{
+		SetMusicBtnOff ();
+		ScriptManager.SoundController.MusicOff ();
 	}
 
 	public void SwitchMusicOn ()

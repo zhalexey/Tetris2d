@@ -20,8 +20,10 @@ public class BoardHelper
 	}
 
 
-	public void BurnBrickLine (Collider2D[] hits)
+	public int BurnBrickLine (Collider2D[] hits)
 	{
+		int hitCoins = 0;
+
 		List<GameObject> parents = new List<GameObject> ();
 		List<GameObject> toDestroy = new List<GameObject> ();
 		List<FixedJoint2D> toDestroyJoints = new List<FixedJoint2D> ();
@@ -30,6 +32,9 @@ public class BoardHelper
 
 			// 1. Mark brick to destroy
 			toDestroy.Add (hit.gameObject);
+			if (BoardController.COIN_TAG == hit.gameObject.tag) {
+				hitCoins++;
+			}
 
 			// 2. Mark parent figure joints to destroy if it is empty
 			GameObject parent = hit.gameObject.transform.parent.gameObject;
@@ -43,6 +48,7 @@ public class BoardHelper
 			} else {
 				parents.Add (parent);
 			}
+
 		}
 
 		// 3. Destroy marked 
@@ -60,6 +66,8 @@ public class BoardHelper
 
 		// 5. Divide into figures
 		DivideFigures (parents);
+
+		return hitCoins;
 	}
 
 

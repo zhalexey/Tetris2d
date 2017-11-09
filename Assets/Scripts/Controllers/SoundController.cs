@@ -15,7 +15,9 @@ public class SoundController: MonoBehaviour
 	{
 		Rotate,
 		Falling,
-		BurnLine
+		BurnLine,
+		MenuBtnHover,
+		MenuBtnClick,
 	}
 
 
@@ -27,6 +29,8 @@ public class SoundController: MonoBehaviour
 	public AudioClip rotateSound;
 	public AudioClip fallingSound;
 	public AudioClip burnLineSound;
+	public AudioClip menuBtnHoverSound;
+	public AudioClip menuBtnClickSound;
 
 	public AudioClip calmMusic;
 	public AudioClip energyMusic;
@@ -66,12 +70,6 @@ public class SoundController: MonoBehaviour
 			return;
 		}
 
-//		AudioSource freeSource = GetFreeAudioSource ();
-//
-//		if (freeSource == null) {
-//			return;
-//		}
-
 		switch (action) {
 		case SoundAction.Rotate:
 			gameSoundAudioSource.clip = rotateSound;
@@ -82,23 +80,23 @@ public class SoundController: MonoBehaviour
 		case SoundAction.BurnLine:
 			gameSoundAudioSource.clip = burnLineSound;
 			break;
-
+		case SoundAction.MenuBtnHover:
+			gameSoundAudioSource.clip = menuBtnHoverSound;
+			break;
+		case SoundAction.MenuBtnClick:
+			gameSoundAudioSource.clip = menuBtnClickSound;
+			break;
 		}
 		gameSoundAudioSource.PlayOneShot (gameSoundAudioSource.clip);
 	}
 
 
-//	private AudioSource GetFreeAudioSource ()
-//	{
-//		AudioSource[] sources = gameObject.GetComponents<AudioSource> ();
-//		foreach (AudioSource source in sources) {
-//			if (!source.isPlaying) {
-//				return (source);
-//			}
-//		}
-//		return null;
-//	}
-//
+	public void PlayBtnHoverSound() {
+		PlaySound (SoundAction.MenuBtnHover);
+	}
+
+
+	//--------------------------------------- Music ------------------------------
 
 	public void PlayCalmMusic() {
 		gameMusicAudioSource.Stop ();
@@ -149,6 +147,7 @@ public class SoundController: MonoBehaviour
 
 
 	public void MusicOff() {
+		PlaySound (SoundAction.MenuBtnClick);
 		isMusicOn = false;
 		PauseMenuTheme ();
 		PauseGameTheme ();
@@ -156,6 +155,7 @@ public class SoundController: MonoBehaviour
 
 
 	public void MusicOn() {
+		PlaySound (SoundAction.MenuBtnClick);
 		isMusicOn = true;
 		PlayMenuTheme ();
 	}

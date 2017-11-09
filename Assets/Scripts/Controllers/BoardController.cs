@@ -15,6 +15,7 @@ public class BoardController : MonoBehaviour
 	public static float BRICK_HALF_SIZE = BRICK_SIZE / 2 - 0.02f;
 	private const string PLAYER_TAG = "Player";
 	public const string UNTAGGED = "Untagged";
+	public const string COIN_TAG = "Coin";
 
 	private int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT;
 	private int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 3;
@@ -39,10 +40,14 @@ public class BoardController : MonoBehaviour
 
 	private bool calmZoneState;
 
+	private int coinsCount;
+
+	private bool isCreated;
 
 
 	void Start ()
 	{
+		coinsCount = 0;
 		calmZoneState = true;
 		ScriptManager.SoundController.PlayCalmMusic ();
 
@@ -90,7 +95,7 @@ public class BoardController : MonoBehaviour
 
 	void RandomizeFigureTextures (GameObject figure)
 	{
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (5, 8)];
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (6, 7)];
 		// [UnityEngine.Random.Range (0, brickTypes.Count)];
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
@@ -188,7 +193,7 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					BoardHelper.Instance.BurnBrickLine (hits);
+					coinsCount += BoardHelper.Instance.BurnBrickLine (hits);
 				}
 
 			}
@@ -204,7 +209,7 @@ public class BoardController : MonoBehaviour
 	}
 
 
-	private bool CheckZoneReached (int fromHight , int toHight)
+	private bool CheckZoneReached (int fromHight, int toHight)
 	{
 		for (int i = fromHight; i < toHight; i++) {
 			Vector2 pointA = getPos (0, i);
@@ -236,6 +241,23 @@ public class BoardController : MonoBehaviour
 		return collider.gameObject.GetComponent<Rigidbody2D> ().velocity.y > FigureController.FALLING_VELOCITY;
 	}
 
+	public bool ValidateCoinsBorrowed (int targetCoins)
+	{
+		if (CheckAllParticlesFinished ()) {
+			return targetCoins == coinsCount;
+		}
+		return false;
+	}
+
+	private bool CheckAllParticlesFinished() {
+		ParticleSystem[] particles = GameObject.FindObjectsOfType<ParticleSystem> ();
+		foreach (ParticleSystem particle in particles) {
+			if (!particle.IsAlive ()) {
+				return false;
+			}
+		}
+			return true;
+	}
 
 	//---------------------------------------------------------- Figure validations --------------------------------------
 
