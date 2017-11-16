@@ -49,11 +49,15 @@ public class LevelMenuController : MonoBehaviour
 	}
 
 	public void ActivateGameOverMenu() {
+		ScriptManager.SoundController.PauseGameTheme ();
+		ScriptManager.SoundController.PlayMenuTheme ();
 		menuHeaderText.text = PLACE_OVER;
 		gameOverMenuCanvas.SetActive (true);
 	}
 
 	public void ActivateTimeOutMenu() {
+		ScriptManager.SoundController.PauseGameTheme ();
+		ScriptManager.SoundController.PlayMenuTheme ();
 		menuHeaderText.text = TIME_OVER;
 		gameOverMenuCanvas.SetActive (true);
 	}
@@ -63,11 +67,13 @@ public class LevelMenuController : MonoBehaviour
 	}
 
 	public void DeactivateNextLevelMenu() {
+		ScriptManager.SoundController.PauseMenuTheme ();
 		nextLevelMenuCanvas.SetActive (false);
 	}
 
 	public void DeactivateGameOverMenu ()
 	{
+		ScriptManager.SoundController.PauseMenuTheme ();
 		gameOverMenuCanvas.SetActive (false);
 	}
 
