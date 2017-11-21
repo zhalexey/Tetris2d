@@ -6,43 +6,34 @@ using System;
 public class BoardController : MonoBehaviour
 {
 
-
 	public const int BOARD_WIDTH = 11;
 	public const int BOARD_HEIGHT = 15;
 	public const int BOARD_HALF_WIDTH = BOARD_WIDTH / 2;
-	public static int BOARD_HALF_HEIGHT = BOARD_HEIGHT / 2;
-	public static float BRICK_SIZE = 0.3f;
-	public static float BRICK_HALF_SIZE = BRICK_SIZE / 2 - 0.02f;
-	private const string PLAYER_TAG = "Player";
+	public const int BOARD_HALF_HEIGHT = BOARD_HEIGHT / 2;
+	public const float BRICK_SIZE = 0.3f;
+	public const float BRICK_HALF_SIZE = BRICK_SIZE / 2 - 0.02f;
+
+	public const string PLAYER_TAG = "Player";
 	public const string UNTAGGED = "Untagged";
 	public const string COIN_TAG = "Coin";
+	public const string HIT_TAG = "Hit";
 
-	private int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT;
-	private int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 3;
-
-
-
+	private const int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT;
+	private const int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 3;
 
 	private const float MIN_DOWN_DISTANCE = 0.01f;
-
 	private const float MIN_DELTA_H = 0.028f;
 	private const float MAX_DELTA_H = 0.032f;
 
-	public static bool[,] grid = new bool[BOARD_HEIGHT, BOARD_WIDTH];
-
 	public List<GameObject> levelFigures;
-
 	public List<GameObject> figures;
 	public List<Sprite> brickTypes;
-	public GameObject brickBurnEffect;
+	public GameObject dropCoinSfx;
+	public GameObject treasureBox;
 
 	private Vector2 initPosition;
-
 	private bool calmZoneState;
-
 	private int coinsCount;
-
-	private bool isCreated;
 
 
 	void Awake() {
@@ -195,7 +186,7 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					coinsCount += BoardHelper.Instance.BurnBrickLine (hits);
+					coinsCount += BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, treasureBox);
 				}
 
 			}
