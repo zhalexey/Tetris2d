@@ -22,12 +22,15 @@ public class DropCoinSFXController : MonoBehaviour
 	private GameObject targetObject;
 	private int sign;
 	private float speed;
+	private  BoardController.CountCoinDelegate callback;
 
 
 
-	public void SetInitialData (GameObject targetObject, Sprite sprite)
+	public void SetInitialData (GameObject targetObject, Sprite sprite, BoardController.CountCoinDelegate callback)
 	{
 		this.targetObject = targetObject;
+		this.callback = callback;
+
 		SpriteRenderer spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer> ();
 		spriteRenderer.sprite = sprite;
 		spriteRenderer.sortingLayerName = "Foreground";
@@ -56,6 +59,7 @@ public class DropCoinSFXController : MonoBehaviour
 			state = State.Finished;
 			gameObject.GetComponentInChildren<SpriteRenderer> ().sprite = null;
 			Destroy (gameObject, gameObject.GetComponentInChildren<ParticleSystem> ().main.duration);
+			callback.Invoke ();
 			return;
 		}
 

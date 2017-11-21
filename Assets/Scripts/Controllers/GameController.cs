@@ -14,17 +14,21 @@ public class GameController : MonoBehaviour
 	}
 
 	private const int TIME_OUT = 5 * 60;
-	private const int COINS_NUMBER = 17;
+	private const int COINS_NUMBER = 9;
+	private const float COIN_PROGRESS_STEP = 0.005f;
 
 	public GameObject timeScale;
+	public GameObject treasureBox;
 
 	private State state;
 	private float currentTime;
 	private bool isGamePaused;
+	private float coinsProgress;
 
 
 	void Start ()
 	{
+		coinsProgress = 0;
 		currentTime = Time.time;
 		state = State.Started;
 		isGamePaused = false;
@@ -65,7 +69,21 @@ public class GameController : MonoBehaviour
 	}
 
 	private bool ValidateCoinsBorrowed() {
-		return ScriptManager.BoardController.ValidateCoinsBorrowed(COINS_NUMBER);
+		CountCoinsProgress ();
+
+		Image treasureBoxImage = treasureBox.GetComponent<Image> ();
+		treasureBoxImage.fillAmount = coinsProgress;
+
+		return ScriptManager.BoardController.CheckAllParticlesFinished() && coinsProgress > 1;
+	}
+
+	void CountCoinsProgress ()
+	{
+		int coinsCount = ScriptManager.BoardController.GetCoinsCount ();
+		float coinsLevel = (float)coinsCount / (float)COINS_NUMBER;
+		if (coinsProgress < coinsLevel) {
+			coinsProgress += COIN_PROGRESS_STEP;
+		}
 	}
 
 	private bool ValidateTimeOut ()

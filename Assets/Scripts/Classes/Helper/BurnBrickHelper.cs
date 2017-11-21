@@ -18,12 +18,14 @@ public class BurnBrickHelper
 	private const int FIGURE_DROP_FORCE_DOWN = 300;
 	private GameObject dropCointSFX;
 	private GameObject targetObject;
+	private BoardController.CountCoinDelegate callback;
 
 
-	public int BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX, GameObject targetObject)
+	public int BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX, GameObject targetObject, BoardController.CountCoinDelegate callback)
 	{
 		this.dropCointSFX = dropCointSFX;
 		this.targetObject = targetObject;
+		this.callback = callback;
 
 		coinCounter = 0;
 		foreach (Collider2D hit in hits) {
@@ -65,9 +67,9 @@ public class BurnBrickHelper
 
 			if (brick.tag == BoardController.COIN_TAG) {
 				coinCounter++;
-				GameObject dropCointSXF = MonoBehaviour.Instantiate (dropCointSFX, brick.transform.position, Quaternion.identity);
-				var dropCoinSFXController = dropCointSXF.GetComponent<DropCoinSFXController> ();
-				dropCoinSFXController.SetInitialData (targetObject, brick.GetComponent<SpriteRenderer>().sprite);
+				GameObject dropCoinSXF = MonoBehaviour.Instantiate (dropCointSFX, brick.transform.position, Quaternion.identity);
+				var dropCoinSFXController = dropCoinSXF.GetComponent<DropCoinSFXController> ();
+				dropCoinSFXController.SetInitialData (targetObject, brick.GetComponent<SpriteRenderer>().sprite, callback);
 				dropCoinSFXController.StartEffect ();
 				MonoBehaviour.Destroy (figure);
 

@@ -36,7 +36,8 @@ public class BoardController : MonoBehaviour
 	private int coinsCount;
 
 
-	void Awake() {
+	void Awake ()
+	{
 		initPosition = getPos (new Vector2 (BoardController.BOARD_WIDTH / 2 - 1, 0));
 	}
 
@@ -48,7 +49,7 @@ public class BoardController : MonoBehaviour
 
 		// level testing
 		foreach (GameObject figure in levelFigures) {
-			Instantiate (figure, new Vector3 (0, 0, 0), Quaternion.identity);
+			Instantiate (figure, figure.transform.position, Quaternion.identity);
 		}
 	}
 
@@ -88,7 +89,7 @@ public class BoardController : MonoBehaviour
 
 	void RandomizeFigureTextures (GameObject figure)
 	{
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (6, 7)];
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (1, 7)];
 		// [UnityEngine.Random.Range (0, brickTypes.Count)];
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
@@ -186,11 +187,17 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					coinsCount += BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, treasureBox);
+					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, treasureBox, CountCoin);
 				}
 
 			}
 		}
+	}
+
+	public delegate void CountCoinDelegate();
+
+	public void CountCoin() {
+		coinsCount++;
 	}
 
 
@@ -234,22 +241,19 @@ public class BoardController : MonoBehaviour
 		return collider.gameObject.GetComponent<Rigidbody2D> ().velocity.y > FigureController.FALLING_VELOCITY;
 	}
 
-	public bool ValidateCoinsBorrowed (int targetCoins)
-	{
-		if (CheckAllParticlesFinished ()) {
-			return targetCoins == coinsCount;
-		}
-		return false;
+	public int GetCoinsCount() {
+		return coinsCount;
 	}
 
-	private bool CheckAllParticlesFinished() {
+	public bool CheckAllParticlesFinished ()
+	{
 		ParticleSystem[] particles = GameObject.FindObjectsOfType<ParticleSystem> ();
 		foreach (ParticleSystem particle in particles) {
-			if (!particle.IsAlive ()) {
+			if (particle.IsAlive ()) {
 				return false;
 			}
 		}
-			return true;
+		return true;
 	}
 
 	//---------------------------------------------------------- Figure validations --------------------------------------
