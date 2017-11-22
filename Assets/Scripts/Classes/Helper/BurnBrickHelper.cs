@@ -141,13 +141,26 @@ public class BurnBrickHelper
 		return figures;
 	}
 
+	private Transform[] GetBricks (GameObject figure)
+	{
+		Transform[] brickTransforms = figure.GetComponentsInChildren<Transform> ();
+		Transform[] brickTransformsCleared = new Transform[brickTransforms.Length - 1];
+		int i = 0;
+		foreach (Transform child in figure.GetComponentsInChildren<Transform> ()) {
+			if (!child.name.Contains ("Figure")) {
+				brickTransformsCleared [i++] = child;
+			}
+		}
+		return brickTransformsCleared;
+	}
 
 	private List<Group> GetGroups (GameObject hitBrick)
 	{
 		List<Group> groups = new List<Group> ();
 
 		GameObject figure = hitBrick.transform.parent.gameObject;
-		Transform[] brickTransforms = figure.GetComponentsInChildren<Transform> ();
+
+		var brickTransforms = GetBricks (figure);
 		Array.Sort (brickTransforms, ByNameComparison);
 
 		Group group = new Group ();
@@ -189,7 +202,14 @@ public class BurnBrickHelper
 
 	private int ByNameComparison (Transform obj1, Transform obj2)
 	{
-		return obj1.name.CompareTo (obj2.name);
+		int num1 = GetBrickNumber (obj1.name);
+		int num2 = GetBrickNumber (obj2.name);
+		return num1 - num2;
+	}
+
+	private int GetBrickNumber(string name) {
+		int startIdx = name.IndexOf ("(") + 1;
+		return Int32.Parse(name.Substring (startIdx, name.Length - startIdx - 1	));
 	}
 
 	

@@ -89,7 +89,7 @@ public class BoardController : MonoBehaviour
 
 	void RandomizeFigureTextures (GameObject figure)
 	{
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (1, 7)];
+		Sprite sprite = brickTypes [UnityEngine.Random.Range (0, 1)];
 		// [UnityEngine.Random.Range (0, brickTypes.Count)];
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
