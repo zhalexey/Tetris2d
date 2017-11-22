@@ -63,6 +63,8 @@ public class LevelMenuController : MonoBehaviour
 	}
 
 	public void ActivateNextLevelMenu() {
+		ScriptManager.SoundController.PauseGameTheme ();
+		ScriptManager.SoundController.PlayMenuTheme ();
 		nextLevelMenuCanvas.SetActive (true);
 	}
 
@@ -83,14 +85,28 @@ public class LevelMenuController : MonoBehaviour
 		DeactivateGameOverMenu ();
 		DeactivateNextLevelMenu ();
 		ScriptManager.GameController.ContinueTimeFlow ();
-		SceneManager.LoadScene ("MainMenu");
+		SceneManager.LoadScene (GameController.START_MENU_SCENE);
 	}
 
 	public void OnRetry() {
 		ScriptManager.GameController.ContinueTimeFlow ();
 		DeactivateGameOverMenu ();
-		SceneManager.LoadScene ("Level1");
+		SceneManager.LoadScene (GameController.MAP_SCENE);
 	}
+
+	public void OnNext() {
+		ScriptManager.GameController.ContinueTimeFlow ();
+		DeactivateGameOverMenu ();
+
+		if (PlayerController.HasAchievedLevel (GameController.MAX_LEVEL)) {
+			PlayerController.ResetLevel ();
+			SceneManager.LoadScene (GameController.CREDITS_SCENE);
+			return;
+		}
+		PlayerController.NextLevel ();
+		SceneManager.LoadScene (GameController.MAP_SCENE);
+	}
+
 
 	//---------------------------------- music / sound ------------------------------
 

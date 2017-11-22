@@ -49,10 +49,12 @@ public class SoundController: MonoBehaviour
 		} else {
 			Destroy (this.gameObject);
 		}
+
+		InitSources ();
 	}
 
 
-	void Start() {
+	void InitSources() {
 		mainMenuMusicAudioSource = gameObject.AddComponent<AudioSource>();
 		mainMenuMusicAudioSource.clip = mainMenuMusic;
 		mainMenuMusicAudioSource.loop = true;

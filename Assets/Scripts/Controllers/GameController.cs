@@ -13,10 +13,17 @@ public class GameController : MonoBehaviour
 		Finished
 	}
 
+	public static int MAX_LEVEL = 2;
+	private const string LEVEL_SCENE = "Level";
+	public const string CREDITS_SCENE = "Credits";
+	public const string MAP_SCENE = "Map";
+	public const string START_MENU_SCENE = "StartMenu";
+
+
 	private const int TIME_OUT = 5 * 60;
-	private const int COINS_NUMBER = 9;
 	private const float COIN_PROGRESS_STEP = 0.005f;
 
+	public int coinsToCollect;
 	public GameObject timeScale;
 	public GameObject treasureBox;
 
@@ -80,7 +87,7 @@ public class GameController : MonoBehaviour
 	void CountCoinsProgress ()
 	{
 		int coinsCount = ScriptManager.BoardController.GetCoinsCount ();
-		float coinsLevel = (float)coinsCount / (float)COINS_NUMBER;
+		float coinsLevel = (float)coinsCount / (float)coinsToCollect;
 		if (coinsProgress < coinsLevel) {
 			coinsProgress += COIN_PROGRESS_STEP;
 		}
@@ -141,6 +148,11 @@ public class GameController : MonoBehaviour
 			Pause ();
 		} else
 			Resume ();
+	}
+
+	public static string GetLevelScene ()
+	{
+		return LEVEL_SCENE + PlayerController.levelNumber;
 	}
 
 
