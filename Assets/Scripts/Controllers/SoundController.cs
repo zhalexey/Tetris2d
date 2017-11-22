@@ -16,6 +16,7 @@ public class SoundController: MonoBehaviour
 		Rotate,
 		Falling,
 		BurnLine,
+		CountCoin,
 		MenuBtnHover,
 		MenuBtnClick,
 	}
@@ -29,6 +30,7 @@ public class SoundController: MonoBehaviour
 	public AudioClip rotateSound;
 	public AudioClip fallingSound;
 	public AudioClip burnLineSound;
+	public AudioClip countCoinSound;
 	public AudioClip menuBtnHoverSound;
 	public AudioClip menuBtnClickSound;
 
@@ -81,6 +83,9 @@ public class SoundController: MonoBehaviour
 			break;
 		case SoundAction.BurnLine:
 			gameSoundAudioSource.clip = burnLineSound;
+			break;
+		case SoundAction.CountCoin:
+			gameSoundAudioSource.clip = countCoinSound;
 			break;
 		case SoundAction.MenuBtnHover:
 			gameSoundAudioSource.clip = menuBtnHoverSound;

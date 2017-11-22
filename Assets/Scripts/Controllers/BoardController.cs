@@ -198,6 +198,7 @@ public class BoardController : MonoBehaviour
 
 	public void CountCoin() {
 		coinsCount++;
+		ScriptManager.SoundController.PlaySound (SoundController.SoundAction.CountCoin);
 	}
 
 
