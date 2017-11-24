@@ -25,11 +25,9 @@ public class BoardController : MonoBehaviour
 	private const float MIN_DELTA_H = 0.028f;
 	private const float MAX_DELTA_H = 0.032f;
 
-	public List<GameObject> levelFigures;
 	public List<GameObject> figures;
 	public List<Sprite> brickTypes;
 	public GameObject dropCoinSfx;
-	public GameObject treasureBox;
 
 	private Vector2 initPosition;
 	private bool calmZoneState;
@@ -48,7 +46,7 @@ public class BoardController : MonoBehaviour
 		ScriptManager.SoundController.PlayCalmMusic ();
 
 		// level testing
-		foreach (GameObject figure in levelFigures) {
+		foreach (GameObject figure in ScriptManager.LevelConfigController.levelFigures) {
 			Instantiate (figure, figure.transform.position, Quaternion.identity);
 		}
 	}
@@ -187,7 +185,7 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, treasureBox, CountCoin);
+					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.LevelConfigController.treasureBox, CountCoin);
 				}
 
 			}
