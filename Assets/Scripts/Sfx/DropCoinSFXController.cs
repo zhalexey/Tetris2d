@@ -12,7 +12,7 @@ public class DropCoinSFXController : MonoBehaviour
 	}
 
 	private const bool RANDOMIZE_SPEED = true;
-	private const float SPEED = 2f;
+	private const float SPEED = 4f;
 	private const float Z_POS = 0;
 	private const float PERIOD = 0.5f;
 	private const float AMPLITUDE = 0.05f;

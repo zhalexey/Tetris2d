@@ -15,6 +15,7 @@ public class LevelMenuController : MonoBehaviour
 	public GameObject menuCanvas;
 	public GameObject gameOverMenuCanvas;
 	public GameObject nextLevelMenuCanvas;
+
 	public Text menuHeaderText;
 
 
@@ -78,6 +79,23 @@ public class LevelMenuController : MonoBehaviour
 		ScriptManager.SoundController.PauseMenuTheme ();
 		gameOverMenuCanvas.SetActive (false);
 	}
+
+	public void OnContinue ()
+	{
+		DeactivateMenu ();
+		ScriptManager.GameController.ContinueTimeFlow ();
+		ScriptManager.SoundController.PauseMenuTheme ();
+		ScriptManager.SoundController.PlayGameTheme ();
+	}
+
+	public void OpenMenu ()
+	{
+		ScriptManager.GameController.StopTimeFlow ();
+		ScriptManager.SoundController.PauseGameTheme ();
+		ScriptManager.SoundController.PlayMenuTheme ();
+		ActivateMenu ();
+	}
+
 
 	public void OnBackToMainMenuClick ()
 	{

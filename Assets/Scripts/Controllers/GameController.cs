@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
 		Finished
 	}
 
-	public static int MAX_LEVEL = 2;
+	public static int MAX_LEVEL = 3;
 	private const string LEVEL_SCENE = "Level";
 	public const string CREDITS_SCENE = "Credits";
 	public const string MAP_SCENE = "Map";
@@ -24,7 +24,6 @@ public class GameController : MonoBehaviour
 	private const float COIN_PROGRESS_STEP = 0.005f;
 
 	public GameObject boardManager;
-	public GameObject levelMenuManager;
 
 	private State state;
 	private float currentTime;
@@ -35,8 +34,7 @@ public class GameController : MonoBehaviour
 	void Awake() {
 		GameObject obj = Instantiate (boardManager);
 		obj.name = ScriptManager.BOARD_MANAGER;
-		obj = Instantiate (levelMenuManager);
-		obj.name = ScriptManager.LEVEL_MENU_MANAGER;
+
 	}
 
 	void Start ()
@@ -119,27 +117,11 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	private void Resume ()
-	{
-		ContinueTimeFlow ();
-		ScriptManager.SoundController.PauseMenuTheme ();
-		ScriptManager.SoundController.PlayGameTheme ();
-		ScriptManager.LevelMenuController.DeactivateMenu ();
-	}
-
-	void StopTimeFlow ()
+	public void StopTimeFlow ()
 	{
 		Time.timeScale = 0;
 		SetPause (true);
 		isGamePaused = true;
-	}
-
-	private void Pause ()
-	{
-		StopTimeFlow ();
-		ScriptManager.SoundController.PauseGameTheme ();
-		ScriptManager.SoundController.PlayMenuTheme ();
-		ScriptManager.LevelMenuController.ActivateMenu ();
 	}
 
 	public void ContinueTimeFlow () {
@@ -151,9 +133,9 @@ public class GameController : MonoBehaviour
 	public void PauseResume ()
 	{
 		if (!isGamePaused) {
-			Pause ();
+			ScriptManager.LevelMenuController.OpenMenu();
 		} else
-			Resume ();
+			ScriptManager.LevelMenuController.OnContinue ();
 	}
 
 	public static string GetLevelScene ()

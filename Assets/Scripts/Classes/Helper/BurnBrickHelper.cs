@@ -65,6 +65,8 @@ public class BurnBrickHelper
 				continue;
 			}
 
+			brick.GetComponent<Collider2D> ().enabled = false;
+
 			if (brick.tag == BoardController.COIN_TAG) {
 				coinCounter++;
 				GameObject dropCoinSXF = MonoBehaviour.Instantiate (dropCointSFX, brick.transform.position, Quaternion.identity);
@@ -74,7 +76,6 @@ public class BurnBrickHelper
 				MonoBehaviour.Destroy (figure);
 
 			} else {
-				brick.GetComponent<Collider2D> ().enabled = false;
 				Vector2 force = new Vector2 (FIGURE_DROP_FORCE_SIDE * Random.Range (-1, 2), FIGURE_DROP_FORCE_DOWN * Random.value);
 				brick.GetComponent<Rigidbody2D> ().AddForce (force);
 				MonoBehaviour.Destroy (figure, TIME_BEFORE_DESTROY_FIGURE);
@@ -93,7 +94,7 @@ public class BurnBrickHelper
 				}
 
 				FixedJoint2D joint = child.GetComponent<FixedJoint2D> ();
-				if (joint != null && joint.connectedBody.transform.parent != figure.transform) {
+				if (joint != null && (joint.connectedBody == null || joint.connectedBody.transform.parent != figure.transform)) {
 					MonoBehaviour.Destroy (joint);
 				}
 			}
@@ -141,7 +142,7 @@ public class BurnBrickHelper
 		return figures;
 	}
 
-	private Transform[] GetBricks (GameObject figure)
+	public static Transform[] GetBricks (GameObject figure)
 	{
 		Transform[] brickTransforms = figure.GetComponentsInChildren<Transform> ();
 		Transform[] brickTransformsCleared = new Transform[brickTransforms.Length - 1];
@@ -154,6 +155,10 @@ public class BurnBrickHelper
 		return brickTransformsCleared;
 	}
 
+	public static void SortBricksDescending(Transform[] bricks) {
+		Array.Sort (bricks, DescendingByName);
+	}
+
 	private List<Group> GetGroups (GameObject hitBrick)
 	{
 		List<Group> groups = new List<Group> ();
@@ -161,7 +166,7 @@ public class BurnBrickHelper
 		GameObject figure = hitBrick.transform.parent.gameObject;
 
 		var brickTransforms = GetBricks (figure);
-		Array.Sort (brickTransforms, ByNameComparison);
+		Array.Sort (brickTransforms, AscendingByName);
 
 		Group group = new Group ();
 		foreach (Transform tr in brickTransforms) {
@@ -200,14 +205,22 @@ public class BurnBrickHelper
 	}
 
 
-	private int ByNameComparison (Transform obj1, Transform obj2)
+	private int AscendingByName (Transform obj1, Transform obj2)
 	{
 		int num1 = GetBrickNumber (obj1.name);
 		int num2 = GetBrickNumber (obj2.name);
 		return num1 - num2;
 	}
 
-	private int GetBrickNumber(string name) {
+	private static int DescendingByName (Transform obj1, Transform obj2)
+	{
+		int num1 = GetBrickNumber (obj1.name);
+		int num2 = GetBrickNumber (obj2.name);
+		return num2 - num1;
+	}
+
+
+	private static int GetBrickNumber(string name) {
 		int startIdx = name.IndexOf ("(") + 1;
 		return Int32.Parse(name.Substring (startIdx, name.Length - startIdx - 1	));
 	}

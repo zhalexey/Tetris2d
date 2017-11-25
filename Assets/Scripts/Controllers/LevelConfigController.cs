@@ -9,6 +9,7 @@ public class LevelConfigController : MonoBehaviour {
 	public GameObject treasureBox;
 	public int coinsToCollect;
 	public GameObject timeScale;
+	public bool isTestMode;
 
 
 	void Awake() {

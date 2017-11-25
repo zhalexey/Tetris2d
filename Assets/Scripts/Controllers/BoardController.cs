@@ -26,6 +26,7 @@ public class BoardController : MonoBehaviour
 	private const float MAX_DELTA_H = 0.032f;
 
 	public List<GameObject> figures;
+	public GameObject testFigure;
 	public List<Sprite> brickTypes;
 	public GameObject dropCoinSfx;
 
@@ -97,17 +98,6 @@ public class BoardController : MonoBehaviour
 		}
 	}
 
-	private GameObject GetNextFigure_Debug ()
-	{
-		foreach (GameObject figure in figures) {
-			if (ContainsName (figure.name, new string[1]{ "Figure_IS" })) {
-				return figure;
-			}
-		}
-		throw new Exception ("Figure not found");
-	}
-
-
 	private bool ContainsName (string comparable, string[] values)
 	{
 		foreach (string value in values) {
@@ -121,7 +111,13 @@ public class BoardController : MonoBehaviour
 
 	public bool Respawn ()
 	{
-		var figure = GetNextFigure ();
+		GameObject figure = null;
+		if (ScriptManager.LevelConfigController.isTestMode) {
+			figure = testFigure;
+		} else {
+			figure = GetNextFigure ();
+		}
+
 		if (!CanBePlaced (figure, initPosition)) {
 			return false;
 		}
@@ -169,7 +165,7 @@ public class BoardController : MonoBehaviour
 	private void CheckBoardStatus ()
 	{	
 
-		for (int i = BOARD_HEIGHT; i > 0; i--) {
+		for (int i = BOARD_HEIGHT - 1; i >= 0; i--) {
 			int counter = 0;
 
 			Vector2 pointA = getPos (0, i);
