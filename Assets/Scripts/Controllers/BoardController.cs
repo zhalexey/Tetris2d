@@ -88,8 +88,10 @@ public class BoardController : MonoBehaviour
 
 	void RandomizeFigureTextures (GameObject figure)
 	{
-		Sprite sprite = brickTypes [UnityEngine.Random.Range (0, 1)];
-		// [UnityEngine.Random.Range (0, brickTypes.Count)];
+		bool isSimpleGame = ScriptManager.LevelConfigController.IsSimpleGame ();
+		int typeNum = UnityEngine.Random.Range (0, isSimpleGame ? brickTypes.Count : 1);
+
+		Sprite sprite = brickTypes [typeNum];
 		Transform[] childs = figure.GetComponentsInChildren<Transform> ();
 		foreach (Transform child in childs) {
 			if (figure != child.gameObject) {

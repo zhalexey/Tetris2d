@@ -31,6 +31,12 @@ public class StartMenuController : MonoBehaviour
 		SceneManager.LoadScene (GameController.MAP_SCENE);
 	}
 
+	public void onStartSimpleGame ()
+	{
+		ScriptManager.SoundController.PauseMenuTheme ();
+		SceneManager.LoadScene (GameController.SIMPLE_GAME_SCENE);
+	}
+
 	public void onCreditsClick ()
 	{
 		ScriptManager.SoundController.PauseMenuTheme ();

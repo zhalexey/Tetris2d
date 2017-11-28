@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
 	private const string LEVEL_SCENE = "Level";
 	public const string CREDITS_SCENE = "Credits";
 	public const string MAP_SCENE = "Map";
+	public const string SIMPLE_GAME_SCENE = "SimpleGame";
 	public const string START_MENU_SCENE = "StartMenu";
 
 
@@ -62,6 +63,10 @@ public class GameController : MonoBehaviour
 
 	void Update() {
 		if (State.Started == state) {
+
+			if (ScriptManager.LevelConfigController.IsSimpleGame ()) {
+				return;
+			}
 
 			if (!ValidateTimeOut ()) {
 				state = State.Finished;

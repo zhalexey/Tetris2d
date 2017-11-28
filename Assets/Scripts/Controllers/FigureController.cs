@@ -16,6 +16,7 @@ public class FigureController : BaseGameObjectController
 		MoveLeft,
 		MoveRight,
 		MoveDown,
+		MoveDownFast,
 		Stopped}
 
 	;
@@ -25,9 +26,10 @@ public class FigureController : BaseGameObjectController
 
 	private const float GRAVITY = 0.125f;
 	private const int ROTATION_DELTA = 10;
-	private const float DELTA_X = 0.028f;
+	private const float DELTA_X = 0.036f;
 	public const float FALLING_VELOCITY = -0.2f;
-	private const float FAST_FALLING_VELOCITY = -2f;
+	private const float FAST_FALLING_VELOCITY = -3f;
+	private const float VERY_FAST_FALLING_VELOCITY = -5f;
 
 	private FigureState state = FigureState.Idle;
 	private float angle = 0;
@@ -55,6 +57,11 @@ public class FigureController : BaseGameObjectController
 
 		if (isPause) {
 			return;
+		}
+
+		if (FigureState.MoveDownFast == state) {
+			CheckFalled ();
+			PerformTransformation ();
 		}
 
 
@@ -91,7 +98,9 @@ public class FigureController : BaseGameObjectController
 				}
 
 			} else if (Input.GetKeyDown (KeyCode.Space)) {
-				gameObject.transform.position = ScriptManager.BoardController.getPos (BoardController.BOARD_WIDTH / 2, 1);
+				if (ScriptManager.BoardController.CanMoveDown (gameObject)) {
+					state = FigureState.MoveDownFast;
+				}
 			}
 		}
 
@@ -240,7 +249,16 @@ public class FigureController : BaseGameObjectController
 
 	void PerformFallingDown ()
 	{
-		Vector2 velocity = new Vector2 (0, state == FigureState.MoveDown ? FAST_FALLING_VELOCITY : FALLING_VELOCITY);
+		float velocityY = 0f;
+		if (FigureState.MoveDown == state) {
+			velocityY = FAST_FALLING_VELOCITY;
+		} else if (FigureState.MoveDownFast == state) {
+			velocityY = VERY_FAST_FALLING_VELOCITY;
+		} else {
+			velocityY = FALLING_VELOCITY;
+		}
+
+		Vector2 velocity = new Vector2 (0, velocityY);
 		gameObject.GetComponent<Rigidbody2D> ().velocity = velocity;
 	}
 

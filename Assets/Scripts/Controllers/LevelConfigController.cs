@@ -12,6 +12,10 @@ public class LevelConfigController : MonoBehaviour {
 	public bool isTestMode;
 
 
+	public bool IsSimpleGame() {
+		return levelFigures == null || levelFigures.Count == 0;
+	}
+
 	void Awake() {
 		GameObject obj = Instantiate (gameManager);
 		obj.name = ScriptManager.GAME_MANAGER;

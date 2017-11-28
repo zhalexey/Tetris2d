@@ -101,7 +101,9 @@ public class LevelMenuController : MonoBehaviour
 	{
 		DeactivateMenu ();
 		DeactivateGameOverMenu ();
-		DeactivateNextLevelMenu ();
+		if (!ScriptManager.LevelConfigController.IsSimpleGame ()) {
+			DeactivateNextLevelMenu ();
+		}
 		ScriptManager.GameController.ContinueTimeFlow ();
 		SceneManager.LoadScene (GameController.START_MENU_SCENE);
 	}
@@ -109,7 +111,8 @@ public class LevelMenuController : MonoBehaviour
 	public void OnRetry() {
 		ScriptManager.GameController.ContinueTimeFlow ();
 		DeactivateGameOverMenu ();
-		SceneManager.LoadScene (GameController.MAP_SCENE);
+		bool isSimpleGame = ScriptManager.LevelConfigController.IsSimpleGame ();
+		SceneManager.LoadScene (isSimpleGame ? GameController.SIMPLE_GAME_SCENE : GameController.MAP_SCENE);
 	}
 
 	public void OnNext() {
