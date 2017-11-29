@@ -4,85 +4,41 @@ using UnityEngine.UI;
 
 public class LevelMenuController : MonoBehaviour
 {
+
 	private const string TIME_OVER = "Time is over";
 	private const string PLACE_OVER = "Place is over";
 
-	public GameObject musicOnBtn;
-	public GameObject musicOffBtn;
-	public GameObject soundOnBtn;
-	public GameObject soundOffBtn;
-
-	public GameObject menuCanvas;
-	public GameObject gameOverMenuCanvas;
-	public GameObject nextLevelMenuCanvas;
-
-	public Text menuHeaderText;
-
-
-	void Start() {
-		UpdateAudioControllers ();
-	}
-
-	void UpdateAudioControllers ()
-	{
-		if (SoundController.isMusicOn) {
-			SetMusicBtnOn ();
-		}
-		else {
-			SetMusicBtnOff ();
-		}
-		if (SoundController.isSoundOn) {
-			SetSoundBtnOn ();
-		}
-		else {
-			SetSoundBtnOff ();
-		}
-	}
 
 	public void ActivateMenu() {
-		menuCanvas.SetActive (true);
-	}
-
-	public void DeactivateMenu ()
-	{
-		menuCanvas.SetActive (false);
-		UpdateAudioControllers ();
+		ScriptManager.LevelMenuCanvas.SetActive (true);
 	}
 
 	public void ActivateGameOverMenu() {
-		ScriptManager.SoundController.PauseGameTheme ();
-		ScriptManager.SoundController.PlayMenuTheme ();
-		menuHeaderText.text = PLACE_OVER;
-		gameOverMenuCanvas.SetActive (true);
+		ActivateGameOverMenu (PLACE_OVER);
 	}
 
 	public void ActivateTimeOutMenu() {
+		ActivateGameOverMenu (TIME_OVER);
+	}
+
+	void ActivateGameOverMenu (string text)
+	{
 		ScriptManager.SoundController.PauseGameTheme ();
 		ScriptManager.SoundController.PlayMenuTheme ();
-		menuHeaderText.text = TIME_OVER;
+		var gameOverMenuCanvas = ScriptManager.GameOverMenuCanvas;
+		Text textComp = ScriptManager.GameOverMenuCanvas.GetComponentInChildren<Text> () as Text;
+		textComp.text = text;
 		gameOverMenuCanvas.SetActive (true);
 	}
 
 	public void ActivateNextLevelMenu() {
 		ScriptManager.SoundController.PauseGameTheme ();
 		ScriptManager.SoundController.PlayMenuTheme ();
-		nextLevelMenuCanvas.SetActive (true);
-	}
-
-	public void DeactivateNextLevelMenu() {
-		ScriptManager.SoundController.PauseMenuTheme ();
-		nextLevelMenuCanvas.SetActive (false);
-	}
-
-	public void DeactivateGameOverMenu ()
-	{
-		ScriptManager.SoundController.PauseMenuTheme ();
-		gameOverMenuCanvas.SetActive (false);
+		ScriptManager.NextLevelMenuCanvas.SetActive (true);
 	}
 
 	public void OnContinue ()
 	{
-		DeactivateMenu ();
 		ScriptManager.GameController.ContinueTimeFlow ();
 		ScriptManager.SoundController.PauseMenuTheme ();
 		ScriptManager.SoundController.PlayGameTheme ();
@@ -96,28 +52,15 @@ public class LevelMenuController : MonoBehaviour
 		ActivateMenu ();
 	}
 
-
-	public void OnBackToMainMenuClick ()
+	public void OnBackToMainMenu ()
 	{
-		DeactivateMenu ();
-		DeactivateGameOverMenu ();
-		if (!ScriptManager.LevelConfigController.IsSimpleGame ()) {
-			DeactivateNextLevelMenu ();
-		}
 		ScriptManager.GameController.ContinueTimeFlow ();
 		SceneManager.LoadScene (GameController.START_MENU_SCENE);
 	}
 
-	public void OnRetry() {
-		ScriptManager.GameController.ContinueTimeFlow ();
-		DeactivateGameOverMenu ();
-		bool isSimpleGame = ScriptManager.LevelConfigController.IsSimpleGame ();
-		SceneManager.LoadScene (isSimpleGame ? GameController.SIMPLE_GAME_SCENE : GameController.MAP_SCENE);
-	}
-
 	public void OnNext() {
 		ScriptManager.GameController.ContinueTimeFlow ();
-		DeactivateGameOverMenu ();
+		ScriptManager.SoundController.PauseMenuTheme ();
 
 		if (PlayerController.HasAchievedLevel (GameController.MAX_LEVEL)) {
 			PlayerController.ResetLevel ();
@@ -128,54 +71,13 @@ public class LevelMenuController : MonoBehaviour
 		SceneManager.LoadScene (GameController.MAP_SCENE);
 	}
 
-
-	//---------------------------------- music / sound ------------------------------
-
-	void SetMusicBtnOff ()
-	{
-		musicOffBtn.SetActive (true);
-		musicOnBtn.SetActive (false);
+	public void OnRetry() {
+		ScriptManager.SoundController.PauseMenuTheme ();
+		ScriptManager.GameController.ContinueTimeFlow ();
+		bool isSimpleGame = ScriptManager.LevelConfigController.IsSimpleGame ();
+		SceneManager.LoadScene (isSimpleGame ? GameController.SIMPLE_GAME_SCENE : GameController.GetLevelScene());
 	}
 
-	void SetMusicBtnOn ()
-	{
-		musicOffBtn.SetActive (false);
-		musicOnBtn.SetActive (true);
-	}
 
-	public void SwitchMusicOff ()
-	{
-		SetMusicBtnOff ();
-		ScriptManager.SoundController.MusicOff ();
-	}
 
-	public void SwitchMusicOn ()
-	{
-		SetMusicBtnOn ();
-		ScriptManager.SoundController.MusicOn ();
-	}
-
-	public void SwitchSoundOff ()
-	{
-		SetSoundBtnOff ();
-		ScriptManager.SoundController.SoundOff ();
-	}
-
-	public void SwitchSoundOn ()
-	{
-		SetSoundBtnOn ();
-		ScriptManager.SoundController.SoundOn ();
-	}
-
-	void SetSoundBtnOff ()
-	{
-		soundOffBtn.SetActive (true);
-		soundOnBtn.SetActive (false);
-	}
-
-	void SetSoundBtnOn ()
-	{
-		soundOffBtn.SetActive (false);
-		soundOnBtn.SetActive (true);
-	}
 }

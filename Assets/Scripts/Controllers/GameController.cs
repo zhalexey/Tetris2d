@@ -24,19 +24,11 @@ public class GameController : MonoBehaviour
 	private const int TIME_OUT = 5 * 60;
 	private const float COIN_PROGRESS_STEP = 0.005f;
 
-	public GameObject boardManager;
-
 	private State state;
 	private float currentTime;
 	private bool isGamePaused;
 	private float coinsProgress;
 
-
-	void Awake() {
-		GameObject obj = Instantiate (boardManager);
-		obj.name = ScriptManager.BOARD_MANAGER;
-
-	}
 
 	void Start ()
 	{
@@ -138,9 +130,11 @@ public class GameController : MonoBehaviour
 	public void PauseResume ()
 	{
 		if (!isGamePaused) {
-			ScriptManager.LevelMenuController.OpenMenu();
-		} else
+			ScriptManager.LevelMenuController.OpenMenu ();
+		} else {
+			ScriptManager.LevelMenuCanvas.SetActive (false);
 			ScriptManager.LevelMenuController.OnContinue ();
+		}
 	}
 
 	public static string GetLevelScene ()

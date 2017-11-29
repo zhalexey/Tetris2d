@@ -62,6 +62,7 @@ public class FigureController : BaseGameObjectController
 		if (FigureState.MoveDownFast == state) {
 			CheckFalled ();
 			PerformTransformation ();
+			return;
 		}
 
 
