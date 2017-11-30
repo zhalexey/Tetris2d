@@ -12,6 +12,8 @@ public class DropCoinSFXController : MonoBehaviour
 	}
 
 	private const bool RANDOMIZE_SPEED = true;
+	private const float RANDOMIZE_SPEED_MIN = 2f;
+	private const float RANDOMIZE_SPEED_MAX = 4f;
 	private const float SPEED = 4f;
 	private const float Z_POS = 0;
 	private const float PERIOD = 0.5f;
@@ -43,7 +45,7 @@ public class DropCoinSFXController : MonoBehaviour
 	public void StartEffect ()
 	{
 		sign = targetObject.transform.position.x - gameObject.transform.position.x > 0 ? 1 : -1;
-		speed = RANDOMIZE_SPEED ? Random.Range (1, 4) : SPEED;
+		speed = RANDOMIZE_SPEED ? Random.Range (RANDOMIZE_SPEED_MIN, RANDOMIZE_SPEED_MAX) : SPEED;
 		state = State.Started;
 	}
 

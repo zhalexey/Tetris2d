@@ -183,7 +183,7 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.LevelConfigController.treasureBox, CountCoin);
+					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.LevelConfigController.GetTreasureBox(), CountCoinCallback);
 				}
 
 			}
@@ -192,7 +192,7 @@ public class BoardController : MonoBehaviour
 
 	public delegate void CountCoinDelegate();
 
-	public void CountCoin() {
+	public void CountCoinCallback() {
 		coinsCount++;
 		ScriptManager.SoundController.PlaySound (SoundController.SoundAction.CountCoin);
 	}

@@ -79,8 +79,8 @@ public class GameController : MonoBehaviour
 	private bool ValidateCoinsBorrowed() {
 		CountCoinsProgress ();
 
-		Image treasureBoxImage = ScriptManager.LevelConfigController.treasureBox.GetComponent<Image> ();
-		treasureBoxImage.fillAmount = coinsProgress;
+		Image img = ScriptManager.LevelConfigController.GetTreasureBoxImg ();
+		img.fillAmount = coinsProgress;
 
 		return ScriptManager.BoardController.CheckAllParticlesFinished() && coinsProgress > 1;
 	}
@@ -88,7 +88,7 @@ public class GameController : MonoBehaviour
 	void CountCoinsProgress ()
 	{
 		int coinsCount = ScriptManager.BoardController.GetCoinsCount ();
-		float coinsLevel = (float)coinsCount / (float)ScriptManager.LevelConfigController.coinsToCollect;
+		float coinsLevel = (float)coinsCount / (float)ScriptManager.LevelConfigController.GetCoinsToCollect();
 		if (coinsProgress < coinsLevel) {
 			coinsProgress += COIN_PROGRESS_STEP;
 		}
@@ -96,9 +96,10 @@ public class GameController : MonoBehaviour
 
 	private bool ValidateTimeOut ()
 	{
-		Image timeScaleImage = ScriptManager.LevelConfigController.timeScale.GetComponent<Image> ();
+		Image img = ScriptManager.LevelConfigController.GetTimeScaleImg ();
+
 		float deltaTime = Time.time - currentTime;
-		timeScaleImage.fillAmount = deltaTime / TIME_OUT;
+		img.fillAmount = deltaTime / TIME_OUT;
 		if (deltaTime >= TIME_OUT) {
 			return false;
 		}
