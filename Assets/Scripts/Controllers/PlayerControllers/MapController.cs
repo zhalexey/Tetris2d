@@ -10,7 +10,6 @@ public class MapController : MonoBehaviour
 	private const string REGEXP_LEVEL = "level[0-9]+";
 	private const string LEVEL = "point_level";
 
-	public Camera mainCamera;
 	public Sprite enabledPointImage;
 	public GameObject targetAnimation;
 
@@ -19,7 +18,7 @@ public class MapController : MonoBehaviour
 
 	void Start ()
 	{
-		ScriptManager.SoundController.PlayEnergyMusic ();
+		ScriptManager.SoundController.PlayMapMusic ();
 		CollectPoints ();
 		UpdatePoints ();	
 	}

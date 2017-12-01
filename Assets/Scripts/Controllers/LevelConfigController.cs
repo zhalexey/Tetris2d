@@ -26,7 +26,10 @@ public class LevelConfigController : MonoBehaviour {
 	}
 
 	public GameObject GetTreasureBox() {
-		return treasureBoxImg.gameObject;
+		if (treasureBoxImg != null) {
+			return treasureBoxImg.gameObject;
+		}
+		return null;
 	}
 
 	public bool IsSimpleGame() {
@@ -41,11 +44,14 @@ public class LevelConfigController : MonoBehaviour {
 		backgroundCanvas.GetComponentInChildren<Image>().sprite = backgroundImage;
 
 		backgroundCanvas.transform.SetParent(camera.transform, false);
-		ScriptManager.TimeScaleCanvas.transform.SetParent (camera.transform, false);
-		ScriptManager.TreasureBoxCanvas.transform.SetParent (camera.transform, false);
 
-		timeScaleImg = GetActiveImage (ScriptManager.TimeScaleCanvas);
-		treasureBoxImg = GetActiveImage (ScriptManager.TreasureBoxCanvas);
+		if (!IsSimpleGame ()) { 
+			ScriptManager.TimeScaleCanvas.transform.SetParent (camera.transform, false);
+			ScriptManager.TreasureBoxCanvas.transform.SetParent (camera.transform, false);
+
+			timeScaleImg = GetActiveImage (ScriptManager.TimeScaleCanvas);
+			treasureBoxImg = GetActiveImage (ScriptManager.TreasureBoxCanvas);
+		}
 
 		coinsToCollect = CountCoinsToCollect ();
 	}

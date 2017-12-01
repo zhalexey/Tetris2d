@@ -36,6 +36,7 @@ public class SoundController: MonoBehaviour
 
 	public AudioClip calmMusic;
 	public AudioClip energyMusic;
+	public AudioClip mapMusic;
 
 
 
@@ -120,6 +121,16 @@ public class SoundController: MonoBehaviour
 		gameMusicAudioSource.Stop ();
 		gameMusicAudioSource.loop = true;
 		gameMusicAudioSource.clip = energyMusic;
+
+		if (isMusicOn) {
+			gameMusicAudioSource.Play ();
+		}
+	}
+
+	public void PlayMapMusic() {
+		gameMusicAudioSource.Stop ();
+		gameMusicAudioSource.loop = true;
+		gameMusicAudioSource.clip = mapMusic;
 
 		if (isMusicOn) {
 			gameMusicAudioSource.Play ();
