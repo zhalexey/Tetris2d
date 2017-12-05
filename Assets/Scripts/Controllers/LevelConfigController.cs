@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class LevelConfigController : MonoBehaviour {
 
+	private const float LEFT_ALIGN_FILL_RATIO_1_33 = 0.9f;
+	private const float LEFT_ALIGN_FILL_RATIO_1_77 = 0.6f;
+
 	public Sprite backgroundImage;
 	public List<GameObject> levelFigures;
 	public bool isTestMode;
@@ -49,12 +52,52 @@ public class LevelConfigController : MonoBehaviour {
 			ScriptManager.TimeScaleCanvas.transform.SetParent (camera.transform, false);
 			ScriptManager.TreasureBoxCanvas.transform.SetParent (camera.transform, false);
 
+			SetLeftArtefactPosition (ScriptManager.TreasureBoxCanvas);
+			SetRightArtefactPosition (ScriptManager.TimeScaleCanvas);
+
 			timeScaleImg = GetActiveImage (ScriptManager.TimeScaleCanvas);
 			treasureBoxImg = GetActiveImage (ScriptManager.TreasureBoxCanvas);
 		}
 
 		coinsToCollect = CountCoinsToCollect ();
 	}
+
+
+	private void SetLeftArtefactPosition(GameObject artefact) {
+		SetArtefactPosition (true, artefact);
+	}
+
+	private void SetRightArtefactPosition(GameObject artefact) {
+		SetArtefactPosition (false, artefact);
+	}
+
+	private void SetArtefactPosition (bool isLeft, GameObject artefact) {
+		
+		Vector2 pos = artefact.transform.position;
+		Vector2 scale = artefact.transform.localScale;
+
+		// position
+
+		var x1 = Camera.main.ScreenToWorldPoint (new Vector3 (isLeft ? 0 : Screen.width, 0, 0)).x;
+		var boardCanvas = ScriptManager.BoardController.gameObject;
+		var x2 = (isLeft ? -1 : 1) * boardCanvas.GetComponent<SpriteRenderer> ().sprite.bounds.size.x * boardCanvas.transform.localScale.x / 2f;
+		var avgX = (x1 + x2) / 2;
+		pos.x = avgX;
+
+		// scale
+
+		var aspectRatio = (float)Screen.width / (float)Screen.height;
+		var f = Mathf.Abs (x1 - x2) * (aspectRatio > 1.34f ? LEFT_ALIGN_FILL_RATIO_1_77 : LEFT_ALIGN_FILL_RATIO_1_33);
+		scale.x *= f;
+		scale.y *= f;
+
+		artefact.transform.localScale = scale;
+		artefact.transform.position = pos;
+	}
+
+
+
+
 
 	private int CountCoinsToCollect() {
 		int counter = 0;

@@ -111,7 +111,7 @@ public class ScriptManager {
 	public static GameObject TreasureBoxCanvas
 	{
 		get {
-			return GetPrefabInstance (TREASUREBOX_CANVAS_PATH);
+			return GetPrefabInstanceCached (TREASUREBOX_CANVAS_PATH);
 		}
 	}
 
