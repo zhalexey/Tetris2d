@@ -46,9 +46,11 @@ public class BoardController : MonoBehaviour
 		calmZoneState = true;
 		ScriptManager.SoundController.PlayCalmMusic ();
 
-		// level testing
+
+		// build level
 		foreach (GameObject figure in ScriptManager.LevelConfigController.levelFigures) {
-			Instantiate (figure, figure.transform.position, Quaternion.identity);
+			GameObject newFigure = Instantiate (figure, figure.transform.position, Quaternion.identity);
+			newFigure.transform.SetParent (ScriptManager.Root.transform);
 		}
 	}
 
@@ -124,6 +126,7 @@ public class BoardController : MonoBehaviour
 			return false;
 		}
 		GameObject newFigure = Instantiate (figure, new Vector3 (initPosition.x, initPosition.y, 0), Quaternion.identity);
+		newFigure.transform.SetParent (ScriptManager.Root.transform);
 		RandomizeFigureTextures (newFigure);
 		newFigure.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, FigureController.FALLING_VELOCITY);
 
@@ -183,7 +186,7 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.LevelConfigController.GetTreasureBox(), CountCoinCallback);
+					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.TreasureBoxCanvas, CountCoinCallback);
 				}
 
 			}

@@ -192,7 +192,7 @@ public class FigureController : BaseGameObjectController
 	void PerformRotateNormal ()
 	{
 		if (angle < desiredAngle) {
-			angle += 10;
+			angle += ROTATION_DELTA;
 			gameObject.transform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
 			if (angle == 360) {
 				angle = 0;

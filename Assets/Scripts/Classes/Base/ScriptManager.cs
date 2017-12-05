@@ -6,14 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class ScriptManager {
 
-	public const string BOARD_CONTROLLER = "BoardController";
-	public const string GAME_CONTROLLER = "GameController";
-	public const string LEVEL_MENU_CONTROLLER = "LevelMenuController";
-	public const string SOUND_CONTROLLER = "SoundController";
-	public const string LEVEL_CONFIG = "LevelConfig";
-	public const string LEVEL_CONFIG_CONTROLLER = "LevelConfigController";
-	public const string CAMERA = "Camera";
-	public const string CAMERA_CONTROLLER = "CameraController";
+	private const string BOARD_CONTROLLER = "BoardController";
+	private const string GAME_CONTROLLER = "GameController";
+	private const string LEVEL_MENU_CONTROLLER = "LevelMenuController";
+	private const string SOUND_CONTROLLER = "SoundController";
+	private const string LEVEL_CONFIG = "LevelConfig";
+	private const string LEVEL_CONFIG_CONTROLLER = "LevelConfigController";
+	private const string CAMERA = "Camera";
+	private const string CAMERA_CONTROLLER = "CameraController";
+	private const string ROOT = "Root";
 
 	private const string SOUND_MANAGER_PATH = "Prefabs/Managers/SoundManager";
 	private const string LEVEL_MENU_MANAGER_PATH = "Prefabs/Managers/LevelMenuManager";
@@ -115,11 +116,23 @@ public class ScriptManager {
 		}
 	}
 
-
 	public static GameObject Camera
 	{
 		get {
 			return GetPrefabInstance (CAMERA);
+		}
+	}
+
+	public static GameObject Root
+	{
+		get {
+			GameObject prefabInstance = null;
+			cache.TryGetValue (ROOT, out prefabInstance);
+			if (prefabInstance == null) {
+				prefabInstance = new GameObject (ROOT);
+				cache.Add (ROOT, prefabInstance);
+			}
+			return prefabInstance;
 		}
 	}
 
@@ -176,15 +189,5 @@ public class ScriptManager {
 	{
 		return GetPrefabInstance (prefabPath, false);
 	}
-
-//	static GameObject FindByName(string name) {
-//		List<Transform> all = FindObjectsOfTypeAll<Transform>();
-//		foreach (Transform tr in all) {
-//			if (tr.name.Equals (name)) {
-//				return tr.gameObject;
-//			}
-//		}
-//		return null;
-//	}
 
 }

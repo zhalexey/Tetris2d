@@ -114,8 +114,8 @@ public class LevelConfigController : MonoBehaviour {
 		return counter;
 	}
 
-	private Image GetActiveImage(GameObject canvas) {
-		Image[] images = canvas.GetComponentsInChildren<Image> ();
+	private Image GetActiveImage(GameObject parent) {
+		Image[] images = parent.GetComponentsInChildren<Image> ();
 		foreach (Image img in images) {
 			if (Image.Type.Filled == img.type) {
 				return img;

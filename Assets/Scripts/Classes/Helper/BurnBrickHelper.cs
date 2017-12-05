@@ -110,6 +110,7 @@ public class BurnBrickHelper
 		foreach (Group group in groups) {
 
 			GameObject newFigure = new GameObject ();
+			newFigure.transform.SetParent (ScriptManager.Root.transform);
 
 			if (group.IsHitGroup ()) {
 				newFigure.tag = BoardController.HIT_TAG;
