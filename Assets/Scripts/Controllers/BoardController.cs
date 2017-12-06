@@ -186,7 +186,11 @@ public class BoardController : MonoBehaviour
 				}
 
 				if (counter == BOARD_WIDTH) {
-					BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.TreasureBoxCanvas, CountCoinCallback);
+					if (ScriptManager.LevelConfigController.IsSimpleGame ()) {
+						BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx);
+					} else {
+						BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.TreasureBoxCanvas, CountCoinCallback);
+					}
 				}
 
 			}

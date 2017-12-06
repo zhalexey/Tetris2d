@@ -54,6 +54,8 @@ public class GameController : MonoBehaviour
 
 
 	void Update() {
+		ScriptManager.LevelConfigController.CheckResolutionChanged ();
+
 		if (State.Started == state) {
 
 			if (ScriptManager.LevelConfigController.IsSimpleGame ()) {

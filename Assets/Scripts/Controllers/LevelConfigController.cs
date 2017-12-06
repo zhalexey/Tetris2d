@@ -16,6 +16,9 @@ public class LevelConfigController : MonoBehaviour {
 	private Image treasureBoxImg;
 	private int coinsToCollect;
 
+	private int screenWidth;
+	private Vector3 baseArtefactScale;
+
 	public int GetCoinsToCollect() {
 		return coinsToCollect;
 	}
@@ -40,6 +43,8 @@ public class LevelConfigController : MonoBehaviour {
 	}
 
 	void Start() {
+		screenWidth = Screen.width;
+
 		ScriptManager.GameController.GetInstanceID();
 
 		GameObject camera = ScriptManager.Camera;
@@ -52,8 +57,8 @@ public class LevelConfigController : MonoBehaviour {
 			ScriptManager.TimeScaleCanvas.transform.SetParent (camera.transform, false);
 			ScriptManager.TreasureBoxCanvas.transform.SetParent (camera.transform, false);
 
-			SetLeftArtefactPosition (ScriptManager.TreasureBoxCanvas);
-			SetRightArtefactPosition (ScriptManager.TimeScaleCanvas);
+			InitializeArtefacts ();
+			AlignArtefacts ();
 
 			timeScaleImg = GetActiveImage (ScriptManager.TimeScaleCanvas);
 			treasureBoxImg = GetActiveImage (ScriptManager.TreasureBoxCanvas);
@@ -71,13 +76,21 @@ public class LevelConfigController : MonoBehaviour {
 		SetArtefactPosition (false, artefact);
 	}
 
+	private void InitializeArtefacts() {
+		baseArtefactScale = ScriptManager.TreasureBoxCanvas.transform.localScale;
+	}
+
+	private void AlignArtefacts() {
+		SetLeftArtefactPosition (ScriptManager.TreasureBoxCanvas);
+		SetRightArtefactPosition (ScriptManager.TimeScaleCanvas);
+	}
+
 	private void SetArtefactPosition (bool isLeft, GameObject artefact) {
 		
 		Vector2 pos = artefact.transform.position;
 		Vector2 scale = artefact.transform.localScale;
 
 		// position
-
 		var x1 = Camera.main.ScreenToWorldPoint (new Vector3 (isLeft ? 0 : Screen.width, 0, 0)).x;
 		var boardCanvas = ScriptManager.BoardController.gameObject;
 		var x2 = (isLeft ? -1 : 1) * boardCanvas.GetComponent<SpriteRenderer> ().sprite.bounds.size.x * boardCanvas.transform.localScale.x / 2f;
@@ -87,9 +100,10 @@ public class LevelConfigController : MonoBehaviour {
 		// scale
 
 		var aspectRatio = (float)Screen.width / (float)Screen.height;
-		var f = Mathf.Abs (x1 - x2) * (aspectRatio > 1.34f ? LEFT_ALIGN_FILL_RATIO_1_77 : LEFT_ALIGN_FILL_RATIO_1_33);
-		scale.x *= f;
-		scale.y *= f;
+		var multiplier = (aspectRatio > 1.34f ? LEFT_ALIGN_FILL_RATIO_1_77 : LEFT_ALIGN_FILL_RATIO_1_33);
+		var f = Mathf.Abs (x1 - x2) * multiplier;
+		scale.x = baseArtefactScale.x * f;
+		scale.y = baseArtefactScale.y * f;
 
 		artefact.transform.localScale = scale;
 		artefact.transform.position = pos;
@@ -124,5 +138,12 @@ public class LevelConfigController : MonoBehaviour {
 		return null;
 	}
 
+
+	public void CheckResolutionChanged() {
+		if (!Screen.width.Equals(screenWidth)) {
+			AlignArtefacts ();
+			screenWidth = Screen.width;
+		}
+	}
 
 }

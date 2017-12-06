@@ -36,6 +36,16 @@ public class BurnBrickHelper
 		return coinCounter;
 	}
 
+	public void BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX)
+	{
+		this.dropCointSFX = dropCointSFX;
+		foreach (Collider2D hit in hits) {
+			BurnBrick (hit.gameObject);
+		}
+		ScriptManager.SoundController.PlaySound (SoundController.SoundAction.BurnLine);
+	}
+
+
 
 	public void BurnBrick (GameObject hitBrick)
 	{
