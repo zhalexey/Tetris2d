@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class MapController : MonoBehaviour
 {
+	private const int defaultWidth = 1366;
+	private const int defaultHeight = 768;
 	private const string REGEXP_LEVEL = "level[0-9]+";
 	private const string LEVEL = "point_level";
 
@@ -16,11 +18,15 @@ public class MapController : MonoBehaviour
 	private List<GameObject> points;
 	private static GameObject targetPoint;
 
+	private float xMult;
+	private float yMult;
+	private float scaleFactor;
+
 	void Start ()
 	{
 		ScriptManager.SoundController.PlayMapMusic ();
 		CollectPoints ();
-		UpdatePoints ();	
+		UpdatePoints ();
 	}
 
 	private void CollectPoints ()
@@ -43,6 +49,7 @@ public class MapController : MonoBehaviour
 	{
 		int pointNum = 1;
 		foreach (GameObject point in points) {
+
 			if (pointNum <= PlayerController.levelMaxAchieved) {
 				EnablePoint (point);
 				if (pointNum == PlayerController.levelNumber) {
