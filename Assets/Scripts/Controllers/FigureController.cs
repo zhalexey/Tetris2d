@@ -115,7 +115,7 @@ public class FigureController : BaseGameObjectController
 
 			if (RotationType.TWO_DIMENSION == rotationType) {
 				if (angle == 0) {
-					desiredAngle = 90;
+					desiredAngle = +90;
 				}
 				else {
 					rotateBack = true;
@@ -124,7 +124,7 @@ public class FigureController : BaseGameObjectController
 			}
 			else
 				if (RotationType.FREE_ROTATE == rotationType) {
-					desiredAngle += 90;
+					desiredAngle -= 90;
 				}
 			
 			SetFigureTrigger (true);
@@ -191,12 +191,12 @@ public class FigureController : BaseGameObjectController
 
 	void PerformRotateNormal ()
 	{
-		if (angle < desiredAngle) {
-			angle += ROTATION_DELTA;
+		if (angle > desiredAngle) {
+			angle -= ROTATION_DELTA;
 			gameObject.transform.rotation = Quaternion.AngleAxis (angle, Vector3.forward);
-			if (angle == 360) {
-				angle = 0;
-				desiredAngle = 0;
+			if (angle == 0) {
+				angle = 360;
+				desiredAngle = 360;
 			}
 		}
 		else {

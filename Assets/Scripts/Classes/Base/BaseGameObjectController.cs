@@ -27,7 +27,6 @@ public class BaseGameObjectController : MonoBehaviour
 	}
 
 
-
 	//--------------------------------------------------------------------
 
 	protected void DebugBox (Vector2 pos)
