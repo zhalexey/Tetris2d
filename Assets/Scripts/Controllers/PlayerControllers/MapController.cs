@@ -18,12 +18,12 @@ public class MapController : MonoBehaviour
 	private List<GameObject> points;
 	private static GameObject targetPoint;
 
-	private float xMult;
-	private float yMult;
 	private float scaleFactor;
 
 	void Start ()
 	{
+		scaleFactor = gameObject.GetComponentInChildren<Canvas> ().scaleFactor;
+			
 		ScriptManager.SoundController.PlayMapMusic ();
 		CollectPoints ();
 		UpdatePoints ();
@@ -68,6 +68,10 @@ public class MapController : MonoBehaviour
 	private void MarkCurrentPoint (GameObject point)
 	{
 		targetPoint = Instantiate (targetAnimation, new Vector3 (point.transform.position.x, point.transform.position.y, 0), Quaternion.identity);
+		Vector3 localScale = targetPoint.transform.localScale * scaleFactor;
+		targetPoint.transform.localScale = localScale;
+
+
 		Canvas canvas = gameObject.GetComponentInChildren<Canvas> ();
 		targetPoint.transform.SetParent (canvas.transform);
 	}
