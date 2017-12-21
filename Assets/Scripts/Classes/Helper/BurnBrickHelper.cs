@@ -159,7 +159,7 @@ public class BurnBrickHelper
 		Transform[] brickTransformsCleared = new Transform[brickTransforms.Length - 1];
 		int i = 0;
 		foreach (Transform child in figure.GetComponentsInChildren<Transform> ()) {
-			if (!child.name.Contains ("Figure")) {
+			if (child != figure.transform) {
 				brickTransformsCleared [i++] = child;
 			}
 		}
@@ -182,10 +182,6 @@ public class BurnBrickHelper
 		Group group = new Group ();
 		foreach (Transform tr in brickTransforms) {
 			GameObject brick = tr.gameObject;
-
-			if (brick == figure) {
-				continue;
-			}
 
 			if (brick == hitBrick) {
 				if (group.Count () > 0) {
