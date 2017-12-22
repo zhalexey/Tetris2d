@@ -13,6 +13,8 @@ public class BoardController : MonoBehaviour
 	public const float BRICK_SIZE = 0.3f;
 	public const float BRICK_HALF_SIZE = BRICK_SIZE / 2 - 0.02f;
 
+	public const string FOREGROUND_LAYER = "Foreground";
+
 	public const string PLAYER_TAG = "Player";
 	public const string UNTAGGED = "Untagged";
 	public const string COIN_TAG = "Coin";
@@ -21,7 +23,7 @@ public class BoardController : MonoBehaviour
 	private const int ENERGY_ZONE_HEIGHT = BOARD_HALF_HEIGHT;
 	private const int CALM_ZONE_HEIGHT = BOARD_HALF_HEIGHT + 3;
 
-	private const float MIN_DOWN_DISTANCE = 0.01f;
+	private const float MIN_DOWN_DISTANCE = 0.02f;
 	private const float MIN_DELTA_H = 0.028f;
 	private const float MAX_DELTA_H = 0.032f;
 
@@ -187,7 +189,7 @@ public class BoardController : MonoBehaviour
 
 				if (counter == BOARD_WIDTH) {
 					if (ScriptManager.LevelConfigController.IsSimpleGame ()) {
-						BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx);
+						BurnBrickHelper.instance.BurnBrickLine (hits);
 					} else {
 						BurnBrickHelper.instance.BurnBrickLine (hits, dropCoinSfx, ScriptManager.TreasureBoxCanvas, CountCoinCallback);
 					}
@@ -196,8 +198,6 @@ public class BoardController : MonoBehaviour
 			}
 		}
 	}
-
-	public delegate void CountCoinDelegate();
 
 	public void CountCoinCallback() {
 		coinsCount++;

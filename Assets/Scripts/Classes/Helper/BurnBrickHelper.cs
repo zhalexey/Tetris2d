@@ -18,10 +18,10 @@ public class BurnBrickHelper
 	private const int FIGURE_DROP_FORCE_DOWN = 300;
 	private GameObject dropCointSFX;
 	private GameObject targetObject;
-	private BoardController.CountCoinDelegate callback;
+	private Delegates.CallBackDelegate callback;
 
 
-	public int BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX, GameObject targetObject, BoardController.CountCoinDelegate callback)
+	public int BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX, GameObject targetObject, Delegates.CallBackDelegate callback)
 	{
 		this.dropCointSFX = dropCointSFX;
 		this.targetObject = targetObject;
@@ -36,9 +36,8 @@ public class BurnBrickHelper
 		return coinCounter;
 	}
 
-	public void BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX)
+	public void BurnBrickLine (Collider2D[] hits)
 	{
-		this.dropCointSFX = dropCointSFX;
 		foreach (Collider2D hit in hits) {
 			BurnBrick (hit.gameObject);
 		}

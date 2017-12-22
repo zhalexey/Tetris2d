@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DropCoinSFXController : MonoBehaviour
 {
-
 	private enum State
 	{
 		Started,
@@ -24,21 +23,21 @@ public class DropCoinSFXController : MonoBehaviour
 	private GameObject targetObject;
 	private int sign;
 	private float speed;
-	private  BoardController.CountCoinDelegate callback;
+	private Delegates.CallBackDelegate callback;
 
 
 
-	public void SetInitialData (GameObject targetObject, Sprite sprite, BoardController.CountCoinDelegate callback)
+	public void SetInitialData (GameObject targetObject, Sprite sprite, Delegates.CallBackDelegate callback)
 	{
 		this.targetObject = targetObject;
 		this.callback = callback;
 
 		SpriteRenderer spriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer> ();
 		spriteRenderer.sprite = sprite;
-		spriteRenderer.sortingLayerName = "Foreground";
+		spriteRenderer.sortingLayerName = BoardController.FOREGROUND_LAYER;
 
 		ParticleSystem particleSystem = gameObject.GetComponentInChildren<ParticleSystem> ();
-		particleSystem.GetComponent<Renderer> ().sortingLayerName = "Foreground";
+		particleSystem.GetComponent<Renderer> ().sortingLayerName = BoardController.FOREGROUND_LAYER;
 	}
 
 
