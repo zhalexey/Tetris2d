@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DropCoinSFXController : MonoBehaviour
 {
@@ -23,11 +24,11 @@ public class DropCoinSFXController : MonoBehaviour
 	private GameObject targetObject;
 	private int sign;
 	private float speed;
-	private Delegates.CallBackDelegate callback;
+	private Action callback;
 
 
 
-	public void SetInitialData (GameObject targetObject, Sprite sprite, Delegates.CallBackDelegate callback)
+	public void SetInitialData (GameObject targetObject, Sprite sprite, Action callback)
 	{
 		this.targetObject = targetObject;
 		this.callback = callback;
@@ -44,7 +45,7 @@ public class DropCoinSFXController : MonoBehaviour
 	public void StartEffect ()
 	{
 		sign = targetObject.transform.position.x - gameObject.transform.position.x > 0 ? 1 : -1;
-		speed = RANDOMIZE_SPEED ? Random.Range (RANDOMIZE_SPEED_MIN, RANDOMIZE_SPEED_MAX) : SPEED;
+		speed = RANDOMIZE_SPEED ? UnityEngine.Random.Range (RANDOMIZE_SPEED_MIN, RANDOMIZE_SPEED_MAX) : SPEED;
 		state = State.Started;
 	}
 
@@ -60,7 +61,7 @@ public class DropCoinSFXController : MonoBehaviour
 			state = State.Finished;
 			gameObject.GetComponentInChildren<SpriteRenderer> ().sprite = null;
 			Destroy (gameObject, gameObject.GetComponentInChildren<ParticleSystem> ().main.duration);
-			callback.Invoke ();
+			callback ();
 			return;
 		}
 

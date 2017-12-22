@@ -18,10 +18,10 @@ public class BurnBrickHelper
 	private const int FIGURE_DROP_FORCE_DOWN = 300;
 	private GameObject dropCointSFX;
 	private GameObject targetObject;
-	private Delegates.CallBackDelegate callback;
+	private Action callback;
 
 
-	public int BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX, GameObject targetObject, Delegates.CallBackDelegate callback)
+	public int BurnBrickLine (Collider2D[] hits, GameObject dropCointSFX, GameObject targetObject, Action callback)
 	{
 		this.dropCointSFX = dropCointSFX;
 		this.targetObject = targetObject;
