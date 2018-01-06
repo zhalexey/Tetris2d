@@ -50,10 +50,11 @@ public class BoardController : MonoBehaviour
 
 
 		// build level
-		foreach (GameObject figure in ScriptManager.LevelConfigController.levelFigures) {
+		ScriptManager.LevelConfigController.levelFigures.ForEach(figure => {
 			GameObject newFigure = Instantiate (figure, figure.transform.position, Quaternion.identity);
 			newFigure.transform.SetParent (ScriptManager.Root.transform);
-		}
+		});
+
 	}
 
 

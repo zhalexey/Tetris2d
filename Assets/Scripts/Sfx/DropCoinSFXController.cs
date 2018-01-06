@@ -24,7 +24,7 @@ public class DropCoinSFXController : MonoBehaviour
 	private GameObject targetObject;
 	private int sign;
 	private float speed;
-	private Action callback;
+	private event Action callback;
 
 
 
